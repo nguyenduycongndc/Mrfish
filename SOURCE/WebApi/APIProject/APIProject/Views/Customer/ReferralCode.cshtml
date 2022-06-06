@@ -1,0 +1,64 @@
+﻿@using Data.DB
+@using Data.Model.APIWeb
+@using PagedList.Mvc
+@using PagedList
+@model IPagedList<ListReferralCodeNewModel>
+
+<div class="col-md-12">
+    <table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+        <thead class="text-center text-white bg-thead">
+            <tr>
+                <th class="width-stt">STT</th>
+                <th>Tên người GT mua hàng</th>
+                <th>SĐT người GT mua hàng</th>
+                <th>Mã giảm giá nhận được</th>
+                <th>Thời gian</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @{
+                if (Model.Count() <= 0)
+                {
+                    <tr>
+                        <td colspan="10">Không có dữ liệu.</td>
+                    </tr>
+                }
+                else
+                {
+                    int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                    foreach (var data in Model)
+                    {
+                        <tr>
+                            <td>@stt</td>
+                            <td>@data.CusRefName</td>
+                            <td>@data.CusRefPhone</td>
+                            <td>@data.CouponCode</td>
+                            @{
+                                if (data.CouponFromDate == null)
+                                {
+                                    <td></td>
+                                }
+                                else
+                                {<td>@data.CouponFromDate.Value.ToString("dd/MM/yyyy hh:mm")</td>}
+                            }
+                            @*<td>@data.CouponFromDate.Value.ToString("dd/MM/yyyy hh:mm")</td>*@
+                        </tr>
+                        stt++;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<div class="col-md-12">
+    <div class="row float-right mr-1">
+        @*phân trang*@
+        @Html.PagedListPager(
+            Model,
+            page => Url.Action("searchReferralCode", "Customer", new { Page = page, cusID = ViewBag.cusID }),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "ListReferralCode" })
+            )
+    </div>
+</div>

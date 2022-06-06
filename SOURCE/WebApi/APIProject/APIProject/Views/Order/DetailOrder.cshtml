@@ -1,0 +1,329 @@
+﻿@using Data.DB
+@using Data.Model.APIWeb
+@using Data.Utils
+
+<head>
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+</head>
+@model ListOrderNewModel
+
+<div id="ViewDetail" @*class="col-lg-12 col-md-12 col-sm-12 col-12 mt-5"*@ class="row col-md-11 col-sm-11 col-12 bg-white radius-form box-shadow-form mt-5 mb-4" style="margin:auto">
+    <div class="col-md-12">
+        <div class="breadcrumb-holder">
+            <div class="row mb-3 mt-3">
+                <div class="col-md-10 col-sm-10 col-10 text-dark px-0">
+                    <h4><a href="javascript:void(0);" onclick="window.location='/Order/Index'"><i class="fa fa-fw fa-arrow-left" style="color:red; font-size:20px;"></i>  </a><i class="fa fa-fw fa-users"></i> Chi tiết đơn hàng</h4>
+                </div>
+                <div class="col-md-2 col-sm-2 col-3 text-right px-0">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row col-md-12 col-sm-12 col-12">
+        <div class="col-md-9  col-sm-9 col-12 mt-2 mb-1">
+            <h5><u>Thông tin khách hàng</u></h5>
+        </div>
+    </div>
+    <div class="row col-md-12 col-sm-12 col-12">
+        <div class="col-md-12 col-sm-12 col-12">
+            <div class="col-md-12 col-sm-12 col-12">
+                <div class="row">
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Họ tên</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <label>@Model.CustomerName</label>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Số điện thoại</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <label>@Model.CustomerPhone</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Hình thức thanh toán</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        @{
+                            switch (Model.PaymentType)
+                            {
+                                case SystemParam.PAYMENT_TYPE_ON_DELIVERY:
+                                    <a>Tiền mặt</a>
+                                    break;
+                                case SystemParam.PAYMENT_TYPE_MOMO:
+                                    <a>Chuyển khoản, MOMO</a>
+                                    break;
+                                case SystemParam.PAYMENT_TYPE_VNPAY:
+                                    <a>Thanh toán VNPAY</a>
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Trạng thái</label>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-8 mt-3">
+                        @{
+                            if (Model.PaymentType == SystemParam.PAYMENT_TYPE_ON_DELIVERY && Model.Status == SystemParam.AWAIT_STATUS_ORDER)
+                            {
+                                <select class="form-control" id="slStatusEdit">
+                                    <option value="@SystemParam.AWAIT_STATUS_ORDER" @(Model.Status.Equals(SystemParam.AWAIT_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Chờ xác nhận</option>
+                                    <option value="@SystemParam.PROCESSING_STATUS_ORDER" @(Model.Status.Equals(SystemParam.PROCESSING_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đang thực hiện</option>
+                                    <option value="@SystemParam.CANCEL_STATUS_ORDER" @(Model.Status.Equals(SystemParam.CANCEL_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hủy</option>
+                                </select>
+                            }
+                            else if (Model.PaymentType == SystemParam.PAYMENT_TYPE_ON_DELIVERY && Model.Status == SystemParam.PROCESSING_STATUS_ORDER)
+                            {
+                                <select class="form-control" id="slStatusEdit">
+                                    <option value="@SystemParam.PROCESSING_STATUS_ORDER" @(Model.Status.Equals(SystemParam.PROCESSING_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đang thực hiện</option>
+                                    <option value="@SystemParam.COMPLETED_STATUS_ORDER" @(Model.Status.Equals(SystemParam.COMPLETED_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hoàn thành</option>
+                                    <option value="@SystemParam.CANCEL_STATUS_ORDER" @(Model.Status.Equals(SystemParam.CANCEL_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hủy</option>
+                                </select>
+                            }
+                            else if (Model.PaymentType == SystemParam.PAYMENT_TYPE_ON_DELIVERY && Model.Status == SystemParam.COMPLETED_STATUS_ORDER)
+                            {
+                                <select class="form-control" id="slStatusEdit">
+                                    <option value="@SystemParam.COMPLETED_STATUS_ORDER" @(Model.Status.Equals(SystemParam.COMPLETED_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hoàn thành</option>
+                                </select>
+                            }
+                            else if (Model.PaymentType == SystemParam.PAYMENT_TYPE_ON_DELIVERY && Model.Status == SystemParam.CANCEL_STATUS_ORDER)
+                            {
+                                <select class="form-control" id="slStatusEdit">
+                                    <option value="@SystemParam.CANCEL_STATUS_ORDER" @(Model.Status.Equals(SystemParam.CANCEL_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hủy</option>
+                                </select>
+                            }
+                            else if ((Model.PaymentType == SystemParam.PAYMENT_TYPE_MOMO || Model.PaymentType == SystemParam.PAYMENT_TYPE_VNPAY) && Model.Status == SystemParam.CANCEL_STATUS_ORDER)
+                            {
+                                <select class="form-control" id="slStatusEdit">
+                                    <option value="@SystemParam.CANCEL_STATUS_ORDER" @(Model.Status.Equals(SystemParam.CANCEL_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hủy</option>
+                                    <option value="@SystemParam.AGAIN_STATUS_ORDER" @(Model.Status.Equals(SystemParam.AGAIN_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hoàn tiền</option>
+                                </select>
+                            }
+                            else if ((Model.PaymentType == SystemParam.PAYMENT_TYPE_MOMO || Model.PaymentType == SystemParam.PAYMENT_TYPE_VNPAY) && Model.Status == SystemParam.COMPLETED_STATUS_ORDER)
+                            {
+                                <select class="form-control" id="slStatusEdit">
+                                    <option value="@SystemParam.COMPLETED_STATUS_ORDER" @(Model.Status.Equals(SystemParam.COMPLETED_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hoàn thành</option>
+                                </select>
+                            }
+                            else if ((Model.PaymentType == SystemParam.PAYMENT_TYPE_MOMO || Model.PaymentType == SystemParam.PAYMENT_TYPE_VNPAY) && Model.Status == SystemParam.AGAIN_STATUS_ORDER)
+                            {
+                                <select class="form-control" id="slStatusEdit">
+                                    <option value="@SystemParam.AGAIN_STATUS_ORDER" @(Model.Status.Equals(SystemParam.AGAIN_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hoàn tiền</option>
+                                </select>
+                            }
+                            else if ((Model.PaymentType == SystemParam.PAYMENT_TYPE_MOMO || Model.PaymentType == SystemParam.PAYMENT_TYPE_VNPAY) && Model.Status == SystemParam.PROCESSING_STATUS_ORDER)
+                            {
+                                <select class="form-control" id="slStatusEdit">
+                                    <option value="@SystemParam.PROCESSING_STATUS_ORDER" @(Model.Status.Equals(SystemParam.PROCESSING_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đang thực hiện</option>
+                                    <option value="@SystemParam.COMPLETED_STATUS_ORDER" @(Model.Status.Equals(SystemParam.COMPLETED_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hoàn thành</option>
+                                    <option value="@SystemParam.CANCEL_STATUS_ORDER" @(Model.Status.Equals(SystemParam.CANCEL_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hủy</option>
+                                </select>
+                            }
+                            else if ((Model.PaymentType == SystemParam.PAYMENT_TYPE_MOMO || Model.PaymentType == SystemParam.PAYMENT_TYPE_VNPAY) && Model.Status == SystemParam.AWAIT_STATUS_ORDER)
+                            {
+                                <select class="form-control" id="slStatusEdit">
+                                    <option value="@SystemParam.AWAIT_STATUS_ORDER" @(Model.Status.Equals(SystemParam.AWAIT_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Chờ xác nhận</option>
+                                    <option value="@SystemParam.PROCESSING_STATUS_ORDER" @(Model.Status.Equals(SystemParam.PROCESSING_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đang thực hiện</option>
+                                    <option value="@SystemParam.CANCEL_STATUS_ORDER" @(Model.Status.Equals(SystemParam.CANCEL_STATUS_ORDER) ? Html.Raw("selected") : Html.Raw(""))>Đã hủy</option>
+                                </select>
+                            }
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row col-md-12 col-sm-12 col-12">
+        <div class="col-md-9  col-sm-9 col-12 mt-2 mb-1">
+            <h5><u>Thông tin nhận hàng</u></h5>
+        </div>
+    </div>
+    <div class="row col-md-12 col-sm-12 col-12">
+        <div class="col-md-12 col-sm-12 col-12">
+            <div class="col-md-12 col-sm-12 col-12">
+                <div class="row">
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Họ tên</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <label>@Model.BuyerName</label>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Số điện thoại</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <label>@Model.BuyerPhone</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Địa chỉ</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <label>@Model.BuyerAddress</label>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Ghi chú</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <label>@Model.Note</label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12 col-12 mt-2 mb-1">
+            <h5><u>Chi tiết đơn hàng và lịch sử</u></h5>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12" id="ListTab">
+        @{
+            //Html.RenderAction("searchOrderHistory", "Customer", new { Page = 1, cusID = CusDetail.ID });
+        }
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#listProduct" onclick="">Danh sách sản phẩm</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#orderHistory">Lịch sử trạng thái</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="listProduct" class="tab-pane fade show active">
+                <div class="row" id="listProductTable">
+                    @{
+                        Html.RenderAction("searchListProductTable", "Order", new { Page = 1, orderID = Model.ID });
+                    }
+                </div>
+            </div>
+            <div id="orderHistory" class="tab-pane fade">
+                <div class="row" id="ListOrderHistoryTable">
+                    @{
+                        Html.RenderAction("searchListOrderHistory", "Order", new { Page = 1, orderID = Model.ID });
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12" style="text-align: right">
+        <div class=" text font-weight-bold" style="font-size: 25px;">Tổng tiền hàng : @String.Format("{0:0.## VNĐ}", Model.TotalPayment) </div>
+        <div class=" text-primary font-weight-bold" style="font-size: 25px;">Tổng giảm voucher : @String.Format("{0:0.## VNĐ}", Model.DiscountCoupon) </div>
+        <div class=" text-primary font-weight-bold" style="font-size: 25px;">Tổng giảm rank : @String.Format("{0:0.## VNĐ}", Model.DiscountRank) </div>
+        <div class=" text-danger font-weight-bold" style="font-size: 25px;">TIỀN PHẢI THANH TOÁN : @String.Format("{0:0.## VNĐ}", Model.TotalPrice) </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12 mt-3 mb-3" style="text-align: right">
+        <button type="button" class="btn btn-outline-secondary" onclick="window.location='/Order/Index'">Đóng</button>
+        <button type="button" class="btn btn-primary px-3 ml-3" onclick="SaveEditOrderNew(@Model.ID)">Lưu</button>
+    </div>
+</div>
+@*end customer detail*@
+
+<script>
+    $(document).ready(function () {
+        @*$('select').selectize({
+            sortField: 'text'
+        });
+
+        if (@CusDetail.Role== @SystemParam.ROLE_CUSTOMER_LOYAL) {
+            $('#hiddenRole').prop('hidden', true);
+            $('#hiddenRole_bt').prop('show', true);
+        }
+        if (@CusDetail.Role== @SystemParam.ROLE_CUSTOMER) {
+            $('#hiddenRole').prop('show', true);
+            $('#hiddenRole_bt').prop('hidden', true);
+        }
+        $('.date').datepicker({
+           dateFormat: "dd/mm/yy"
+        });
+
+        $('#EditCustomer #cmbSex').val(@CusDetail.Sex);
+        $('#EditCustomer #cbbStatusUpdate').val(@CusDetail.Status);*@
+
+    }); //end document.ready
+</script>
+
+<script type="text/javascript">
+    $('select').selectize({
+        sortField: 'text'
+    });
+    var count = 0;
+    $("#addImg").off('click').on('click', function (e) {
+        e.preventDefault();
+        count++;
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            $("#divAddImg").append('<div id="img_' + count + '" class="col-md-4 float-left mt-2 text-right"><i onclick="DeleteImg($(this));" src="' + fileUrl + '" class="fa fa-2x fa-remove text-danger" data="img_' + count + '" title="Xóa" ></i><input type="hidden" name="ImageUrl" value="' + fileUrl + '"><img class="imgCreateShop cursor-pointer" width="100%" height="100%" src="' + fileUrl + '" onclick="ChangeImg($(this));" /></div>');
+            var listUrl = $("#txturlImage").val();
+            if (listUrl == "") {
+                listUrl = fileUrl;
+                $("#txturlImage").val(listUrl);
+            }
+            else {
+                var url = listUrl + "," + fileUrl;
+                $("#txturlImage").val(url);
+            }
+        }
+        fider.popup();
+    });
+</script>
+
+<script type="text/javascript">
+    var count = 0;
+    $("#addImg2").off('click').on('click', function (e) {
+        e.preventDefault();
+        count++;
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            $("#divAddImg2").append('<div id="img_' + count + '" class="col-md-4 float-left mt-2" style ="box-sizing:border-box;display:inline-block;margin-top:10px;"><img class="imgCreateShop cursor-pointer" width="100%" height="100%" src="' + fileUrl + '" onclick="ChangeImg($(this));" /><i onclick="DeleteImg($(this));" src="' + fileUrl + '" class="fa fa-2x fa-remove " data="img_' + count + '" title="Xóa"  style="position:relative;top:-42px;left:-23px;color: #ff0000;"></i></div>');
+            var listUrl = $("#txturlImage").val();
+            if (listUrl == "") {
+                listUrl = fileUrl;
+                $("#txturlImage").val(listUrl);
+            }
+            else {
+                var url = listUrl + "," + fileUrl;
+                $("#txturlImage").val(url);
+            }
+        }
+        fider.popup();
+    });
+</script>
+
+<script type="text/javascript">
+    function ChangeImg($url) {
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            var url_old = $url.attr('src');
+            $url.attr('src', fileUrl);
+            if (fileUrl != url_old) {
+                var str = $('#txturlImage').val().replace(url_old, fileUrl);
+                $('#txturlImage').val(str);
+            }
+        }
+        fider.popup();
+    }
+
+</script>
+
+<script type="text/javascript">
+    function DeleteImg(obj) {
+        var temp = obj.attr('data');
+        var url = obj.attr('src');
+        $('#' + temp + '').remove();
+        var str = $('#txturlImage').val();
+        $('#txturlImage').val(str.replace(url, ""));
+    }
+</script>

@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Data.Utils
+<div class="col-md-12 mt-5">
+    <div class="breadcrumb-holder">
+        <div class="row mb-3 mt-3">
+            <div class="col-md-10 col-sm-10 col-9 text-dark px-0 mt-3">
+                <h4><i class="fa fa-plus"></i> Thêm banner </h4>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="form_create_item" name="form_create_item" class="">
+    <div class="row col-md-11 col-sm-11 col-12 bg-white radius-form box-shadow-form mb-5" style="margin:auto">
+        <!--Left content-->
+        <div class="col-lg-7 col-md-7">
+            <div class="row ">
+                <div class="col-md-4 col-4 mt-3">
+                    <p class="mb-0 color-require mt-2"><label class="text-dark">Tiêu đề quảng cáo</label> *</p>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    <input type="text" class="form-control" id="titleCreate" name="title" placeholder="Banner quảng cáo">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-4 mt-3">
+                    <p class="mb-0 color-require mt-2"><label class="text-dark">Trạng thái banner</label> *</p>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    <select class="form-control" id="slTypeSend"  onchange="enableCheckbox(this.value, 'checkMes');">
+                        <option>Trạng thái banner</option>
+                        <option value="@SystemParam.TYPESEND_BANNER_DRAFT">@SystemParam.TYPESEND_BANNER_DRAFT_STRING</option>
+                        <option value="@SystemParam.TYPESEND_BANNER">@SystemParam.TYPESEND_BANNER_STRING</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-4 mt-3">
+                    <p class="mb-0 color-require mt-2"><label class="text-dark">Loại banner</label> *</p>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    <select class="form-control" id="slType">
+                        <option>Loại banner</option>
+                        <option value="@SystemParam.NEWS_TYPE_BANNER">@SystemParam.NEWS_TYPE_BANNER_STRING</option>
+                        <option value="@SystemParam.NEWS_TYPE_POLICY">@SystemParam.NEWS_TYPE_POLICY_STRING</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row col-md-12 col-sm-12 col-12 mt-3" id="checkMes">
+                <input class="mt-1 inline checkbox" type="checkbox" id="_checkMes" value="0" />&nbsp;<a>Gửi thông báo cho khách hàng</a>
+            </div>              
+        </div>
+        <div class="col-lg-5 col-md-5 row" id="add_logo_place">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label>*</p>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3 article" id="AddLogoPlace">
+                <img id="AddImgLogoPlace" src="/Uploads/files/add_img.png" class="col-md-12 px-0 contentImg" alt="your image" />
+            </div>
+        </div>
+        <div class="row col-lg-12 col-md-12 col-12 mt-2">
+            <div class="col-md-12 col-sm-12 col-12 mt-1">
+                <p class=" color-require"><label class="text-dark">Mô tả</label></p>
+            </div>
+            <div class="col-md-12 col-sm-12 col-12 mt-1">
+                <textarea name="Note" class="form-control mb-3" id="NoteCreate"></textarea>
+            </div>
+        </div>
+        <div class="row col-12 mb-3 mt-3">
+            <div class="col-md-4 offset-md-8 text-right">
+                <button type="button" class="btn btn-outline-secondary" onclick="window.location='/Banner/Index'">Đóng</button>
+                <button type="button" class="btn btn-primary px-3 ml-3" onclick="CreateBanner()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<script type="text/javascript">
+    
+    $(document).ready(function () {
+
+        //CKEDITOR.replace('editor', {
+        //    height: 300
+        //});
+
+        //CKEDITOR.replace('technicalCreate', {
+        //    height: 300,
+        //    disableObjectResizing: true
+        //});
+        CKEDITOR.replace('NoteCreate', {
+            height: 300,
+            disableObjectResizing: true
+        });
+        $("#add_logo_place").off('click').on('click', function (e) {
+            e.preventDefault();
+            var fider = new CKFinder();
+
+            fider.selectActionFunction = function (fileUrl) {
+                $("#AddImgLogoPlace ").remove();
+                $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+                var url = window.location.origin + fileUrl;
+                $('#txtAddLogoPlace').val(url);
+            }
+            fider.popup();
+        });
+        $('#checkbox-value').text($('#_checkMes').val());
+        $("#_checkMes").on('change', function () {
+            if ($(this).is(':checked')) {
+                $(this).attr('value', '1');
+            } else {
+                $(this).attr('value', '0');
+            }
+
+            $('#checkbox-value').text($('#_checkMes').val());
+        });
+    });
+</script>

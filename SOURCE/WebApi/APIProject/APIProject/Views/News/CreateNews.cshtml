@@ -1,0 +1,209 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Data.Utils
+@using Data.Model.APIWeb;
+
+<style>
+    .dropdown-menu {
+        color: #737b84 !important;
+    }
+</style>
+<div class="col-md-12 mt-5">
+    <div class="breadcrumb-holder">
+        <div class="row mb-3 mt-3">
+            <div class="col-md-6 col-sm-6 col-12 text-dark px-0">
+                <h4><i class="fa fa-fw fa-newspaper-o"></i> Thêm bài viết</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-12 bg-white radius-form box-shadow-form mb-5">
+    <!-- START col-md-8 panel form create -->
+    <div class="row pb-3">
+        <div class="col-md-3 col-sm-6 col-12 mt-3">
+            <p class="mb-0 color-require"><label class="text-dark">Loại tin tức</label> *</p>
+
+            <select class="form-control" id="cbbType" onchange="ChangeFrom();">
+                <option value="0">Tất cả</option>
+                <option value="3">Tin tức</option>
+                <option value="4">Khuyến mãi</option>
+                <option value="6">Banner</option>
+            </select>
+        </div>
+        <div class="col-md-3 col-sm-6 col-12 mt-3">
+            <p class="mb-0 color-require"><label class="text-dark">Trạng thái</label> *</p>
+            <select class="form-control" id="cbbStatus">
+                <option value="0">Lưu nháp</option>
+                <option selected value="1">Đăng Tin</option>
+            </select>
+        </div>
+        <div class="col-md-3 col-sm-6 col-12 mt-3" id="notiCus">
+            <p class="mb-0 color-require"><label class="text-dark">Thông báo đến</label> *</p>
+            <select class="form-control" id="cbbTypeSend" onchange="getItemNews(this.value)">
+                <option value="@SystemParam.TYPE_NO_SEND">Không gửi cho khách hàng </option>
+                <option value="@SystemParam.TYPE_SEND_ALL">Tất cả khách hàng </option>
+                <option value="@SystemParam.TYPE_SEND_CUSTOMER_LOYAL">Khách hàng thân thiết</option>
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <div class="col-md-12 col-sm-12 col-12" id="titleNews">
+            <p class="mb-0 color-require"><label class="text-dark">Tiêu đề</label> *</p>
+            <input type="text" class="form-control" id="txtTitle" placeholder="Nhập tiêu đề bài viết" />
+        </div>
+    </div>
+    <div class="row pb-3" id="editNews">
+        <div class="col-md-12 col-sm-12 col-12">
+            <p class="mb-0 color-require"><label class="text-dark">Mô tả</label> *</p>
+            <textarea  class="form-control mb-3" id="txt-description" placeholder="Nhập nội dung mô tả"></textarea>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <div class="col-md-6 col-12">
+           <label class="text-dark">Thời gian đăng bài</label>
+            <input class="form-control" id="date-picker"/>
+        </div>
+        <div class="col-md-6 col-12">
+            <label class="text-dark">Sản phẩm</label>
+            <select class="form-control" id="val-item-id">
+                <option value="@null" selected hidden disabled>--Chọn sản phẩm--</option>
+                @{ 
+                    foreach (var dt in (List<ListItemOutputModel>)ViewBag.lstItem)
+                    {
+                        <option value="@dt.ID">@dt.Name</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <div class="col-md-3 col-sm-12 col-12">
+            <a href="" class="text-bold mb-3" style="width:100%;height:100%; color: #5A5A5A;" id="add_logo_place">
+                <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label> *</p>
+                <div class="news">
+                    <div class="article" id="AddLogoPlace">
+                        <img id="AddImgLogoPlace" src="/Uploads/files/add_img.png" class="col-md-12 px-0 contentImg" alt="your image" />
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="row pb-3" id="desNews">
+        <div class="col-md-12 col-sm-12 col-12">
+            <p class="mb-0 color-require"><label class="text-dark">Nội dung</label> *</p>
+            <textarea class="form-control" rows="3"  id="txt-content"></textarea>
+        </div>
+    </div>
+
+
+
+    @*<div class="col-md-12 border-form mt-2"></div>*@
+
+    <div class="row pb-2 pt-2 text-right">
+        <div class="col-md-12 col-sm-12 col-12 txtBeauty">
+            <a class="btn btn-danger" href="/News/Index"><i class="fa fa-fw fa-arrow-left"></i> Trở về</a>
+            <button class="btn btn-info" onclick="createNews();"><i class="fa fa-fw fa-file-word-o"></i> lưu </button>
+            @*<button class="btn btn-success" onclick="createNews();"><i class="fa fa-fw fa-check"></i> Đăng bài</button>*@
+
+        </div>
+    </div>
+</div> <!-- END col-md-8 panel form create -->
+<div class="modal" id="modalLoadSendNotify" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content text-center py-3">
+            <div class="modal-body text-center">
+                <i class="fa fa-spinner text-success fa-spin" style="font-size: 40px;"></i>
+                <div class="col-md-12 text-center mt-2">
+                    <span>Vui lòng đợi. Hệ thống đang xử lý việc gửi thông báo tới khách hàng.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+
+        $('#date-picker').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm'
+        });
+        $('#date-picker').on('dp.change', function () {
+            if ($(this).val().length > 0)
+                $('#cbbStatus').attr('disabled', true)
+            else
+                $('#cbbStatus').attr('disabled', false)
+        })
+      
+        //CKEDITOR.replace('editor', {
+        //    height: 300
+        //});
+
+        CKEDITOR.replace('txt-content', {
+            height: 300,
+            disableObjectResizing: true
+        });
+
+        CKEDITOR.on('dialogDefinition', function (ev) {
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+            //var editorO = ev.data.definition.dialog.getParentEditor();
+
+            if (dialogName == 'image' || dialogName == 'image2') {
+                var infoTab = dialogDefinition.getContents('info');
+
+                if (dialogName == 'image') {
+                    infoTab.remove('txtHeight');
+                    infoTab.remove('txtWidth');
+                    infoTab.remove('ratioLock');
+                }
+                else {
+                    infoTab.remove('height');
+                    infoTab.remove('width');
+                    infoTab.remove('lock');
+                }
+            }
+        });
+    });
+
+  
+    function getItemNews(category) {
+        if (category == 4) {
+            $('#cbbItemNews').removeAttr('disabled');
+            $('#labelItem').css('color', '#5A5A5A');
+        }
+        else {
+            $('#cbbItemNews').attr("disabled", "disabled");
+            $('#labelItem').css('color', 'hsl(0, 0%, 85%)');
+        }
+
+    }
+
+    $("#add_logo_place").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            $("#AddImgLogoPlace ").remove();
+            $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+            var url = window.location.origin + fileUrl;
+            $('#txtAddLogoPlace').val(url);
+        }
+        fider.popup();
+    });
+    
+    function ChangeFrom() {
+        if ($("#cbbType").val() == 6) {
+            $("#editNews").css("display","none");
+            $("#desNews").css("display", "none");
+            $("#titleNews").css("display", "none");
+            $("#notiCus").css("display", "none");
+        }
+        else {
+            $("#editNews").css("display", "block");
+            $("#desNews").css("display", "block");
+            $("#titleNews").css("display", "block");
+            $("#notiCus").css("display", "block");
+        }
+    }
+</script>

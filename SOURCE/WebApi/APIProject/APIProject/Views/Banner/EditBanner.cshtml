@@ -1,0 +1,204 @@
+﻿
+@using Data.Utils;
+@using Data.Model.APIWeb;
+@model ListBannerModel
+<div class="modal fade" id="EditBanner" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg mw-100 w-75" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-fw fa-shopping-cart"></i>Sửa banner</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="form_update_item" name="form_update_item">
+                    <div class=" row col-lg-12 col-md-12 col-12">
+                        <div class="col-md-6 row">
+                            <div class="col-md-4 col-4 mt-3">
+                                <p class="color-require"><label class="text-dark">Tiêu đề banner</label> *</p>
+                            </div>
+                            <div class="col-md-8 col-8 mt-3">
+                                <input type="text" class="form-control" id="titleEdit" name="title" placeholder="Banner quảng cáo" value="@Model.Title">
+                            </div>
+                            <div class="col-md-4 col-4 mt-3">
+                                <p class="mb-0 color-require mt-2"><label class="text-dark">Trạng thái banner</label> *</p>
+                            </div>
+                            @{
+                                if (Model.TypeSend == SystemParam.TYPESEND_BANNER)
+                                {
+                                    <div class="col-md-8 col-8 mt-3">
+                                        <select class="form-control" id="slTypeSendEdit" onchange="enableCheckboxEdit(this.value, 'checkMes');">
+                                            <option value="@SystemParam.TYPESEND_BANNER" @(Model.TypeSend.Equals(SystemParam.TYPESEND_BANNER) ? Html.Raw("selected") : Html.Raw(""))>@SystemParam.TYPESEND_BANNER_STRING</option>
+                                        </select>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-8 col-8 mt-3">
+                                        <select class="form-control" id="slTypeSendEdit" onchange="enableCheckboxEdit(this.value, 'checkMes');">
+                                            <option value="@SystemParam.TYPESEND_BANNER_DRAFT" @(Model.TypeSend.Equals(SystemParam.TYPESEND_BANNER_DRAFT) ? Html.Raw("selected") : Html.Raw(""))>@SystemParam.TYPESEND_BANNER_DRAFT_STRING</option>
+                                            <option value="@SystemParam.TYPESEND_BANNER" @(Model.TypeSend.Equals(SystemParam.TYPESEND_BANNER) ? Html.Raw("selected") : Html.Raw(""))>@SystemParam.TYPESEND_BANNER_STRING</option>
+                                        </select>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-4 col-4 mt-3">
+                                <p class="mb-0 color-require"><label class="text-dark">Loại banner</label> *</p>
+                            </div>
+                            <div class="col-md-8 col-8 mt-3">
+                                <select class="form-control" id="slTypeEdit">
+                                    <option value="@SystemParam.NEWS_TYPE_BANNER" @(Model.Type.Equals(SystemParam.NEWS_TYPE_BANNER) ? Html.Raw("selected") : Html.Raw(""))>@SystemParam.NEWS_TYPE_BANNER_STRING</option>
+                                    <option value="@SystemParam.NEWS_TYPE_POLICY" @(Model.Type.Equals(SystemParam.NEWS_TYPE_POLICY) ? Html.Raw("selected") : Html.Raw(""))>@SystemParam.NEWS_TYPE_POLICY_STRING</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 col-4 mt-3">
+                                <p class="mb-0 color-require"><label class="text-dark">Trạng thái hoạt động</label> *</p>
+                            </div>
+                            <div class="col-md-8 col-8 mt-3">
+                                <select class="form-control" id="slStatusEdit">
+                                    <option value="@SystemParam.ACTIVE_FALSE" @(Model.Status.Equals(SystemParam.ACTIVE_FALSE) ? Html.Raw("selected") : Html.Raw(""))>Ngừng hoạt động</option>
+                                    <option value="@SystemParam.ACTIVE" @(Model.Status.Equals(SystemParam.ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Đang hoạt động</option>
+                                </select>
+                            </div>
+                        </div>
+                        @{
+                            if (Model.TypeSend == SystemParam.TYPESEND_BANNER)
+                            {
+                                <div class="row col-md-12 col-sm-12 col-12 mt-3" id="checkMesEdit">
+                                    @*<input class="mt-1" type="checkbox" id="_checkMesEdit" value="@Model.icheck" disabled />&nbsp;<a>Gửi thông báo cho khách hàng</a>*@
+                                    <input type="checkbox" id="_checkMesEdit" value="@Model.icheck" @(@Model.icheck.Equals(1) ? Html.Raw("checked") : Html.Raw("")) disabled />&nbsp;<a>Gửi thông báo cho khách hàng</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row col-md-12 col-sm-12 col-12 mt-3" id="checkMesEdit">
+                                    <input class="mt-1" type="checkbox" id="_checkMesEdit" value="@Model.icheck" @(@Model.icheck.Equals(1) ? Html.Raw("checked") : Html.Raw("")) disabled />&nbsp;<a>Gửi thông báo cho khách hàng</a>
+                                </div>
+                            }
+                        }
+
+                        <div class="col-lg-5 col-md-5 row" id="add_logo_place2">
+                            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                                <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label>*</p>
+                            </div>
+                            <div class="col-md-9 col-sm-8 col-12 mt-3 article" id="AddLogoPlace2">
+                                <img id="AddImgLogoPlace2" src="@Model.AvatarUrl" class="col-md-12 px-0 contentImg" alt="your image" />
+                            </div>
+                        </div>
+                        <div class="row col-lg-12 col-md-12 col-12 mt-2">
+                            <div class="col-md-12 col-sm-12 col-12 mt-1">
+                                <p class=" color-require"><label class="text-dark">Mô tả</label></p>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-12 mt-1">
+                                <textarea name="Note" class="form-control mb-3" id="NoteEditBanner">@Model.Content</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary px-3" onclick="SaveEditBanner(@Model.ID);">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        CKEDITOR.replace('NoteEditBanner', {
+            height: 300,
+            disableObjectResizing: true
+        });
+        CKEDITOR.on('dialogDefinition', function (ev) {
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+            //var editorO = ev.data.definition.dialog.getParentEditor();
+
+            if (dialogName == 'image' || dialogName == 'image2') {
+                var infoTab = dialogDefinition.getContents('info');
+
+                if (dialogName == 'image') {
+                    infoTab.remove('txtHeight');
+                    infoTab.remove('txtWidth');
+                    infoTab.remove('ratioLock');
+                }
+                else {
+                    infoTab.remove('height');
+                    infoTab.remove('width');
+                    infoTab.remove('lock');
+                }
+            }
+        });
+        $("#add_logo_place2").off('click').on('click', function (e) {
+            e.preventDefault();
+            var fider = new CKFinder();
+
+            fider.selectActionFunction = function (fileUrl) {
+                $("#AddImgLogoPlace2 ").remove();
+                $("#AddLogoPlace2").append('<img id="AddImgLogoPlace2" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+                var url = window.location.origin + fileUrl;
+                $('#txtAddLogoPlace').val(url);
+            }
+            fider.popup();
+        });
+        $('#checkbox-value').text($('#_checkMesEdit').val());
+        if ($("#_checkMesEdit").val() == 1) {
+            $("#_checkMesEdit").is(':checked');
+        }
+        $("#_checkMesEdit").on('change', function () {
+            if ($(this).is(':checked')) {
+                $(this).attr('value', '1');
+            } else {
+                $(this).attr('value', '0');
+            }
+
+            $('#checkbox-value').text($('#_checkMesEdit').val());
+        });
+    });
+</script>
+<script>
+
+    $(document).ready(function () {
+
+        //CKEDITOR.replace('technicalEdit', {
+        //    height: 300,
+        //    disableObjectResizing: true
+        //});
+        CKEDITOR.replace('NoteEdit', {
+            height: 300,
+            disableObjectResizing: true
+        });
+
+        CKEDITOR.on('dialogDefinition', function (ev) {
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+            //var editorO = ev.data.definition.dialog.getParentEditor();
+
+            if (dialogName == 'image' || dialogName == 'image2') {
+                var infoTab = dialogDefinition.getContents('info');
+
+                if (dialogName == 'image') {
+                    infoTab.remove('txtHeight');
+                    infoTab.remove('txtWidth');
+                    infoTab.remove('ratioLock');
+                }
+                else {
+                    infoTab.remove('height');
+                    infoTab.remove('width');
+                    infoTab.remove('lock');
+                }
+            }
+        });
+
+    });
+</script>
+
+

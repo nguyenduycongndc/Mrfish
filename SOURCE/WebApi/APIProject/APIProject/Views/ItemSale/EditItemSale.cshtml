@@ -1,0 +1,136 @@
+﻿@using Data.Utils;
+@using Data.Model.APIWeb;
+@model ItemSaleEditModel
+<div class="modal fade" id="EditItemSale" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg mw-100 w-75" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-fw fa-shopping-cart"></i>Sửa sản phẩm khuyến mại</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="form_update_item" name="form_update_item">
+                    <div class=" row col-lg-12 col-md-12 col-12">
+                        <div class="col-md-6 row">
+                            <div class="col-md-4 col-4 mt-3">
+                                <p class="color-require"><label class="text-dark">Danh mục</label> *</p>
+                            </div>
+                            <div class="col-md-8 col-8 mt-3">
+                                <select class="form-control" id="lsCategoryUpdate" name="CategoryID" value="@Model.CategoryID" onchange="listNameItemSale(this.value, 'slNameItemSaleUpdate');" disabled>
+                                    @{
+                                        foreach (var p in ViewBag.listCategory)
+                                        {
+                                            <option value="@p.CategoryID" @(Model.CategoryID == @p.CategoryID ? Html.Raw("selected") : Html.Raw(""))>@p.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 col-4 mt-3">
+                                <p class="color-require"><label class="text-dark">Tên sản phẩm</label> *</p>
+                            </div>
+                            <div class="col-md-8 col-8 mt-3">
+                                <select class=" form-control" id="slNameItemSaleUpdate" name="ItemID" value="@Model.ItemID" disabled>
+                                    <option value="">Tên sản phẩm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-4 col-4 mt-3">
+                                <p class="mb-0 color-require"><label class="text-dark">Số sản phẩm khuyến mại</label> *</p>
+                            </div>
+                            <div class="col-md-8 col-8 mt-3">
+                                <input onkeypress='validate(event)' type="text" class="form-control" id="QuantityEdit" name="QuantityEdit" placeholder="Số lượng sản phẩm" value="@Model.Quantity" />
+                            </div>
+                            <div class="col-md-4 col-4 mt-3">
+                                <p class="mb-0 color-require"><label class="text-dark">Giá tiền</label> *</p>
+                            </div>
+                            <div class="col-md-8 col-8 mt-3">
+                                <input type="text" class="form-control number" id="PriceEdit" name="Price" placeholder="Nhập giá tiền..." value="@String.Format("{0:n0}", Convert.ToInt32(Model.Price))" />
+                            </div>
+                        </div>
+
+
+                        <div class="row col-lg-12 col-md-12 col-12 mt-3">
+                            <label class="text-dark">Thờ gian áp dụng khuyến mại</label>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-4 col-4 mt-3"><p class="mb-0 color-require"><label class="text-dark">Từ ngày</label> *</p></div>
+                            <div class="col-md-3 col-3 mt-3">
+                                <input class="form-control" id="timeFromDateSaleUpdate" type="time" min='01:00' max='03:00' value="@Model.FromTime">
+                            </div>
+                            <div class="col-md-5 col-5 mt-3">
+                                <input type="date" id="fromDateSaleUpdate" data-date-format="dd/MM/yyyy" class="form-control" value="@Model.FromDate" />
+                                @*<i class="fa fa-calendar absolute-icon-calendar"></i>*@
+                            </div>
+                            <div class="col-md-4 col-4 mt-3"><p class="mb-0 color-require"><label class="text-dark">Đến ngày</label> *</p></div>
+                            <div class="col-md-3 col-3 mt-3">
+                                <input class="form-control" id="timeToDateSaleUpdate" type="time" min='01:00' max='03:00' value="@Model.ToTime">
+                            </div>
+                            <div class="col-md-5 col-5 mt-3">
+                                <input type="date" id="toDateSaleUpdate" data-date-format="dd/MM/yyyy" class="form-control" value="@Model.ToDate" />
+                                @*<i class="fa fa-calendar absolute-icon-calendar"></i>*@
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-4 col-4 mt-3"><label style="color: orange;">Số lượng còn lại:</label></div>
+                            <div class="col-md-8 col-8 mt-3" style="color: orange; font-size: large;">@Model.Remain</div>
+                            <div class="col-md-5 col-5 mt-3"><label style="color: forestgreen; ">Số lượng khuyến mại đã bán:</label></div>
+                            <div class="col-md-7 col-7 mt-3" style="color: forestgreen; font-size: large;">@Model.QuantitySold</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary px-3" onclick="SaveEditItemSale(@Model.ID);">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.number').keyup(function () {
+            $val = cms_decode_currency_format($(this).val());
+            $(this).val(cms_encode_currency_format($val));
+        });
+
+        $('#form_update_item #cmbCategoryUpdate').val(@Model.CategoryID);
+
+        //load danh sach teen
+        var categoryId = $("#lsCategoryUpdate").val();
+        if (categoryId != "" && categoryId != undefined) {
+            listNameItemSale(categoryId, 'slNameItemSaleUpdate');
+        }
+    });
+
+    function cms_encode_currency_format(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    }
+
+    function cms_decode_currency_format(obs) {
+        if (obs == '')
+            return 0;
+        else
+            return parseInt(obs.replace(/,/g, ''));
+    }
+    function validate(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+</script>

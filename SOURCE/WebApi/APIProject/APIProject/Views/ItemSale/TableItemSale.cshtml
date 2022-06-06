@@ -1,0 +1,72 @@
+﻿@using Data.DB;
+@using Data.Model.APIWeb
+@using Data.Utils
+@using PagedList.Mvc
+@model PagedList.IPagedList<ListItemSaleWebModel>
+
+<table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+    <thead class="text-center text-white bg-thead">
+        <tr>
+            <th>STT</th>
+            <th>Mã sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Danh mục</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+            <th>Thời gian bắt đầu</th>
+            <th>Thời gian kết thúc</th>
+            <th>Ngày tạo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody ">
+        @{
+            if (Model.Count <= 0)
+            {
+                <tr class="text-center">
+                    <td colspan="10">Không có dữ liệu.</td>
+                </tr>
+            }
+            else
+            {
+                int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                foreach (var data in Model)
+                {
+                    <tr>
+                        <td class="text-center">@stt</td>
+                        <td>@data.ItemCode </td>
+                        <td>@data.ItemName</td>
+                        <td>@data.Category</td>
+                        <td>@data.Quantity</td>
+                        <td>@String.Format("{0:n0}", data.Price) VND</td>
+                        <td>@data.FromDate.Value.ToString("dd/MM/yyyy hh:mm")</td>
+                        <td>@data.ToDate.Value.ToString("dd/MM/yyyy hh:mm")</td>
+                        <td>@data.CreateDateSale.Value.ToString("dd/MM/yyyy")</td>
+                        <td class="width2btn">
+                            <a data-toggle="tooltip" data-placement="top" title="Sửa sản phẩm" class="cursor-pointer" onclick="LoadItemSale(@data.ID)">
+                                <i class="btnEdit fa fa-fw fa-edit"></i>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Xóa sản phẩm." class="cursor-pointer" onclick="DeleteItemSale(@data.ID)">
+                                <i class="btnDelete fa fa-fw fa-trash-o"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    stt++;
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<div class="col-md-12">
+    <div class="row float-right">
+        @*phân trang*@
+        @Html.PagedListPager(Model, Page => Url.Action("SearchItemSaleWeb", new { Page, fromDateCreate = ViewBag.fromDateCreate, toDateCreate = ViewBag.toDateCreate, itemSaleName = ViewBag.itemSaleName, category = ViewBag.category, }),
+     PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+     {
+         HttpMethod = "GET",
+         UpdateTargetId = "tableItemSale"
+     })
+     )
+    </div>
+</div>

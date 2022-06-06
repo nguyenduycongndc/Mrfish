@@ -1,0 +1,104 @@
+﻿
+@using Data.DB;
+@using Data.Model.APIWeb
+@using Data.Utils
+@using PagedList.Mvc
+@model PagedList.IPagedList<VoucherIntroduceNewModel>
+
+<table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+    <thead class="text-center text-white bg-thead">
+        <tr>
+            <th>STT</th>
+            <th>Mã voucher</th>
+            <th>Tên voucher</th>
+            <th>Loại mã</th>
+            <th>Mức giảm</th>
+            <th>Số lượng đã nhận</th>
+            @*<th class="widthCreatedDate">Ngày bắt đầu</th>
+                <th class="widthCreatedDate">Ngày kết thúc</th>*@
+            <th>Trạng thái kích hoạt</th>
+            <th class="widthCreatedDate">Ngày tạo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            if (Model.Count <= 0)
+            {
+                <tr class="text-center">
+                    <td colspan="14">Không có dữ liệu.</td>
+                </tr>
+            }
+            else
+            {
+                int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                foreach (var data in Model)
+                {
+                    <tr>
+                        <td class="text-center">@stt</td>
+                        <td>@data.Code </td>
+                        <td>@data.Name </td>
+                        @{
+                            switch (data.TypeDiscount)
+                            {
+                                case SystemParam.COUPON_DISCOUNT_MONEY:
+                                    <td class="text-center">Theo tiền</td>
+                                    break;
+                                case SystemParam.COUPON_DISCOUNT_PERCENT:
+                                    <td class="text-center">Theo %</td>
+                                    break;
+                                default:
+                                    break;
+
+                            }
+                        }
+                        <td>@String.Format("{0:n0}", data.Discount)</td>
+                        <td>@data.QuantityReceived</td>
+                        <td class="text-center">
+                            <input type="checkbox" @(@data.IsStatus.Equals(1) ? Html.Raw("checked") : Html.Raw("")) disabled>
+                        </td>
+                        <td>@data.CreateDate.ToString("dd/MM/yyyy hh:mm")</td>
+                        @{
+                            if (data.QuantityReceived != 0)
+                            {
+                                <td class="width2btn">
+                                    <a data-placement="top" title="Chi tiết voucher." class="cursor-pointer" href="@Url.Action("ShowEditVoucherIntroduce", "VoucherIntroduce", new { ID = data.ID})">
+                                        <i class="btnEdit fa fa-fw fa-edit"></i>
+                                    </a>
+                                    <a style="pointer-events: none; color: #ccc; font-size: 20px;" data-toggle="tooltip" data-placement="top" title="Xóa Voucher" class="cursor-pointer" onclick="DeleteVoucherIntroduce(@data.ID)">
+                                        <i class="fa fa-fw fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="width2btn">
+                                    <a data-placement="top" title="Chi tiết voucher." class="cursor-pointer" href="@Url.Action("ShowEditVoucherIntroduce", "VoucherIntroduce", new { ID = data.ID})">
+                                        <i class="btnEdit fa fa-fw fa-edit"></i>
+                                    </a>
+                                    <a data-toggle="tooltip" data-placement="top" title="Xóa Voucher" class="cursor-pointer" onclick="DeleteVoucherIntroduce(@data.ID)">
+                                        <i class="btnDelete fa fa-fw fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            }
+                        }
+                    </tr>
+                    stt++;
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<div class="col-md-12">
+    <div class="row float-right">
+        @*phân trang*@
+        @Html.PagedListPager(Model, Page => Url.Action("SearchVoucherIntroduce", new { Page, nameVoucher = ViewBag.nameVoucher, fromDate = ViewBag.fromDate, toDate = ViewBag.toDate, typeDiscountVoucherIntroduce = ViewBag.typeDiscountVoucherIntroduce }),
+     PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+     {
+         HttpMethod = "GET",
+         UpdateTargetId = "tableSearchVoucherIntroduce"
+     })
+     )
+    </div>
+</div>

@@ -1,0 +1,449 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A7181C06-E2D0-481A-96E1-D3BA89F63295}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Data</RootNamespace>
+    <AssemblyName>Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BCrypt.Net, Version=0.1.4141.31969, Culture=neutral, PublicKeyToken=f3bc8f8c31beeb49, processorArchitecture=MSIL">
+      <HintPath>..\packages\BCrypt.Net.0.1.0\lib\net35\BCrypt.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.5.3.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.3.1\lib\net40\EPPlus.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="H.Engine.IO, Version=1.2.1.0, Culture=neutral, PublicKeyToken=56a250a977deb371, processorArchitecture=MSIL">
+      <HintPath>..\packages\H.Engine.IO.1.2.1\lib\net45\H.Engine.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="H.WebSockets, Version=1.2.1.0, Culture=neutral, PublicKeyToken=56a250a977deb371, processorArchitecture=MSIL">
+      <HintPath>..\packages\H.WebSockets.1.2.1\lib\net45\H.WebSockets.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.9.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.10\lib\net45\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=6.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.6.12.0\lib\net45\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=6.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.6.12.0\lib\net45\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.6.12.0\lib\net45\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WebSockets, Version=0.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WebSockets.0.2.3.1\lib\net45\Microsoft.WebSockets.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="QRCoder, Version=1.3.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QRCoder.1.3.6\lib\net40\QRCoder.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SharpRaven, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpRaven.2.4.0\lib\net45\SharpRaven.dll</HintPath>
+    </Reference>
+    <Reference Include="SocketIOClient, Version=0.6.26.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SocketIO4Net.Client.0.6.26\lib\net40\SocketIOClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Barcode, Version=4.5.1.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Barcode.4.5.1\lib\net40\Spire.Barcode.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.License, Version=1.3.8.40, Culture=neutral, PublicKeyToken=b1144360237c8b3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Barcode.4.5.1\lib\net40\Spire.License.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=6.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.6.12.0\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\APIProject\bin\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="websocket-sharp, Version=1.0.1.0, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebSocketSharp-netstandard.1.0.1\lib\net45\websocket-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net, Version=0.7.0.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
+      <HintPath>..\packages\SocketIO4Net.Client.0.6.26\lib\net40\WebSocket4Net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Business\ConfigBusiness.cs" />
+    <Compile Include="Business\VoucherIntroduceBusiness.cs" />
+    <Compile Include="Business\VoucherCustomerBusiness.cs" />
+    <Compile Include="Business\CartBusiness.cs" />
+    <Compile Include="Business\CategoryBusiness.cs" />
+    <Compile Include="Business\CouponBusiness.cs" />
+    <Compile Include="Business\CustomerBusiness.cs" />
+    <Compile Include="Business\EmailBusiness.cs" />
+    <Compile Include="Business\GenericBusiness.cs" />
+    <Compile Include="Business\BannerBusiness .cs" />
+    <Compile Include="Business\ItemSaleBusiness.cs" />
+    <Compile Include="Business\ItemBusiness.cs" />
+    <Compile Include="Business\LoginBusiness.cs" />
+    <Compile Include="Business\MemberPointHistoryBusiness.cs" />
+    <Compile Include="Business\NewsBusiness.cs" />
+    <Compile Include="Business\NotifyBusiness.cs" />
+    <Compile Include="Business\OrderBusiness.cs" />
+    <Compile Include="Business\PackageBusiness.cs" />
+    <Compile Include="Business\PushNotifyBusiness.cs" />
+    <Compile Include="Business\RankBusiness.cs" />
+    <Compile Include="Business\ReceiveAddressBusiness.cs" />
+    <Compile Include="Business\RequestAPIBusiness.cs" />
+    <Compile Include="Business\ResponseBusiness.cs" />
+    <Compile Include="Business\UserBusiness.cs" />
+    <Compile Include="Business\VNPayBusiness.cs" />
+    <Compile Include="Business\VNPAY_CS_ASPX.cs" />
+    <Compile Include="DB\Cart.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CategoryNew.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Config.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Coupon.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CouponCustomer.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CouponRanking.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CouponRefer.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Customer.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\District.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\GroupItem.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Item.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\ItemsSale.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\MembersPointHistory.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Model1.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Model1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Model1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model1.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="DB\News.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Notification.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Order.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\OrderHistory.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\OrderItem.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Province.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Ranking.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\ReceiveAddress.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\User.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Ward.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\APIApp\CartModel.cs" />
+    <Compile Include="Model\APIApp\ChangePasswordModel.cs" />
+    <Compile Include="Model\APIApp\ChangePointOutputModel.cs" />
+    <Compile Include="Model\APIApp\ChildCategoryModel.cs" />
+    <Compile Include="Model\APIApp\CommentInputModel.cs" />
+    <Compile Include="Model\APIApp\CommentOutputModel.cs" />
+    <Compile Include="Model\APIApp\ConfirmCodeInputModel.cs" />
+    <Compile Include="Model\APIApp\CouponModel.cs" />
+    <Compile Include="Model\APIApp\CreateOrderModel.cs" />
+    <Compile Include="Model\APIApp\CustomerReferModel.cs" />
+    <Compile Include="Model\APIApp\CustomersOutputModel.cs" />
+    <Compile Include="Model\APIApp\DistrictModel.cs" />
+    <Compile Include="Model\APIApp\CreateCustomerAppInputModel.cs" />
+    <Compile Include="Model\APIApp\CreateRequestAppInputModel.cs" />
+    <Compile Include="Model\APIApp\CustomerDetailOutputModel.cs" />
+    <Compile Include="Model\APIApp\AddPointIntPutModel.cs" />
+    <Compile Include="Model\APIApp\GoogleOutputModel.cs" />
+    <Compile Include="Model\APIApp\GroupItemChild.cs" />
+    <Compile Include="Model\APIApp\GroupItemModel.cs" />
+    <Compile Include="Model\APIApp\HistoryOrderOutputModel.cs" />
+    <Compile Include="Model\APIApp\HomeScreenOutPutModel.cs" />
+    <Compile Include="Model\APIApp\ItemDetailModel.cs" />
+    <Compile Include="Model\APIApp\ItemOutputModel.cs" />
+    <Compile Include="Model\APIApp\ListCategoryModel.cs" />
+    <Compile Include="Model\APIApp\ListCustomerImageModel.cs" />
+    <Compile Include="Model\APIApp\ListICustomerImageIDModel.cs" />
+    <Compile Include="Model\APIApp\ListItemModel.cs" />
+    <Compile Include="Model\APIApp\ListNewsAppModel.cs" />
+    <Compile Include="Model\APIApp\ListOrderItemID.cs" />
+    <Compile Include="Model\APIApp\ListOrderModel.cs" />
+    <Compile Include="Model\APIApp\ListOrderOutputModel.cs" />
+    <Compile Include="Model\APIApp\ListProductAppModel.cs" />
+    <Compile Include="Model\APIApp\LoginAppInputModel.cs" />
+    <Compile Include="Model\APIApp\MemberPointHistoryModel.cs" />
+    <Compile Include="Model\APIApp\NewsAppOutputModel.cs" />
+    <Compile Include="Model\APIApp\NewsDetailModel.cs" />
+    <Compile Include="Model\APIApp\NotificationModel.cs" />
+    <Compile Include="Model\APIApp\OrderOutputModel.cs" />
+    <Compile Include="Model\APIApp\ProvinceAndDistricModel.cs" />
+    <Compile Include="Model\APIApp\ProvinceModel.cs" />
+    <Compile Include="Model\APIApp\PushNotiAppInputModel.cs" />
+    <Compile Include="Model\APIApp\ReceiveAddressModel.cs" />
+    <Compile Include="Model\APIApp\RegisterModel.cs" />
+    <Compile Include="Model\APIApp\ShopOutputModel.cs" />
+    <Compile Include="Model\APIApp\StatusAgentModel.cs" />
+    <Compile Include="Model\APIApp\UserInforOutputModel.cs" />
+    <Compile Include="Model\APIApp\WardModel.cs" />
+    <Compile Include="Model\APIWeb\BatchDetailOutputModel.cs" />
+    <Compile Include="Model\APIWeb\RankEditNewModel.cs" />
+    <Compile Include="Model\APIWeb\ListContactInfoNewModel.cs" />
+    <Compile Include="Model\APIWeb\RankNewModel.cs" />
+    <Compile Include="Model\APIWeb\DetailConfigModel.cs" />
+    <Compile Include="Model\APIWeb\VoucherIntroduceNewModel.cs" />
+    <Compile Include="Model\APIWeb\VoucherCustomerNewModel.cs" />
+    <Compile Include="Model\APIWeb\MemberPointHistoryWebModel.cs" />
+    <Compile Include="Model\APIWeb\ListOrderHistoryTableModel.cs" />
+    <Compile Include="Model\APIWeb\ListProductTableModel.cs" />
+    <Compile Include="Model\APIWeb\ListReferralCodeNewModel.cs" />
+    <Compile Include="Model\APIWeb\ListOrderNewModel.cs" />
+    <Compile Include="Model\APIWeb\ListReceiveAddressModel .cs" />
+    <Compile Include="Model\APIWeb\ListCustomerDetailNewModel.cs" />
+    <Compile Include="Model\APIWeb\ListProvinceModel.cs" />
+    <Compile Include="Model\APIWeb\CategoryModel.cs" />
+    <Compile Include="Model\APIWeb\CreateBatchInputModel.cs" />
+    <Compile Include="Model\APIWeb\CreateCardWebInputModel.cs" />
+    <Compile Include="Model\APIWeb\ItemSaleEditModel.cs" />
+    <Compile Include="Model\APIWeb\CreateItemInputModel.cs" />
+    <Compile Include="Model\APIWeb\CreateNewsInputModel.cs" />
+    <Compile Include="Model\APIWeb\CreateShopInputModel.cs" />
+    <Compile Include="Model\APIWeb\CreateWarrantyWebInputModel.cs" />
+    <Compile Include="Model\APIWeb\CustomerModel.cs" />
+    <Compile Include="Model\APIWeb\DashBoardDetailOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ExcelWarrantyCardOutput.cs" />
+    <Compile Include="Model\APIWeb\GetBatchDetailInputModel.cs" />
+    <Compile Include="Model\APIWeb\GetListBatchInputModel.cs" />
+    <Compile Include="Model\APIWeb\GetListCustomerInputModel.cs" />
+    <Compile Include="Model\APIWeb\GetListHistoryMemberPointInputModel.cs" />
+    <Compile Include="Model\APIWeb\GetListNewsWebInputModel.cs" />
+    <Compile Include="Model\APIWeb\GetListUserWebInputModel.cs" />
+    <Compile Include="Model\APIWeb\JsonResultsModel.cs" />
+    <Compile Include="Model\APIWeb\ListCategoryOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ListImageAgentModel.cs" />
+    <Compile Include="Model\APIWeb\ListBannerModel.cs" />
+    <Compile Include="Model\APIWeb\ListItemSaleWeb.cs" />
+    <Compile Include="Model\APIWeb\ListItemWeb.cs" />
+    <Compile Include="Model\APIWeb\ListItemOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ListOrderWebModel.cs" />
+    <Compile Include="Model\APIWeb\ListProdcut.cs" />
+    <Compile Include="Model\APIWeb\ListStaticGiftModel.cs" />
+    <Compile Include="Model\APIWeb\ListUserWebOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ListBatchOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ListCustomerOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ListGiftWebOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ListHistoryMessageOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ListHistoryOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ListNewsWebOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ListRequestOutputModel.cs" />
+    <Compile Include="Model\APIWeb\LoginWebInputModel.cs" />
+    <Compile Include="Model\APIWeb\OrderDetailEditOutput.cs" />
+    <Compile Include="Model\APIWeb\PointDetailOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ProductOfBatchModel.cs" />
+    <Compile Include="Model\APIWeb\RequestDetailWebOutputModel.cs" />
+    <Compile Include="Model\APIWeb\ListShopOutputModel.cs" />
+    <Compile Include="Model\APIWeb\UpdateGiftInputModel.cs" />
+    <Compile Include="Model\APIWeb\UpdatePasswordUserWebInputModel.cs" />
+    <Compile Include="Model\APIWeb\UserDetailOutputModel.cs" />
+    <Compile Include="Model\APIWeb\CardDetailOutputModel.cs" />
+    <Compile Include="Model\APIWeb\WarrantyCardOutput.cs" />
+    <Compile Include="Model\DataPageListOutputModel.cs" />
+    <Compile Include="Model\NotifyDataModel.cs" />
+    <Compile Include="Model\OneSignalModel.cs" />
+    <Compile Include="Model\PushNotify.cs" />
+    <Compile Include="Model\VNPayOutputModel.cs" />
+    <Compile Include="Model\VnpOutputModel.cs" />
+    <Compile Include="Model\VnpViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\Sessions.cs" />
+    <Compile Include="Utils\SystemParam.cs" />
+    <Compile Include="Utils\Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <EntityDeploy Include="DB\Model1.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Model1.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="DB\Model1.edmx.diagram">
+      <DependentUpon>Model1.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Scripts\jquery-1.12.4.min.map" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Content\PagedList.css" />
+    <Content Include="Content\themes\base\accordion.css" />
+    <Content Include="Content\themes\base\all.css" />
+    <Content Include="Content\themes\base\autocomplete.css" />
+    <Content Include="Content\themes\base\base.css" />
+    <Content Include="Content\themes\base\button.css" />
+    <Content Include="Content\themes\base\core.css" />
+    <Content Include="Content\themes\base\datepicker.css" />
+    <Content Include="Content\themes\base\dialog.css" />
+    <Content Include="Content\themes\base\draggable.css" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_444444_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_555555_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777620_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_777777_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\menu.css" />
+    <Content Include="Content\themes\base\progressbar.css" />
+    <Content Include="Content\themes\base\resizable.css" />
+    <Content Include="Content\themes\base\selectable.css" />
+    <Content Include="Content\themes\base\selectmenu.css" />
+    <Content Include="Content\themes\base\slider.css" />
+    <Content Include="Content\themes\base\sortable.css" />
+    <Content Include="Content\themes\base\spinner.css" />
+    <Content Include="Content\themes\base\tabs.css" />
+    <Content Include="Content\themes\base\theme.css" />
+    <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="DB\Model1.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Model1.edmx</DependentUpon>
+      <LastGenOutput>Model1.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DB\Model1.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Model1.edmx</DependentUpon>
+      <LastGenOutput>Model1.cs</LastGenOutput>
+    </Content>
+    <Content Include="Scripts\jquery-1.12.4-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.12.4.js" />
+    <Content Include="Scripts\jquery-1.12.4.min.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

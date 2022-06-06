@@ -1,0 +1,203 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Data.Utils
+
+<div class="col-md-12 mt-5">
+    <div class="breadcrumb-holder">
+        <div class="row mb-3 mt-3">
+            <div class="col-md-10 col-sm-9 text-dark px-0 mt-3">
+                <h4><i class="fa fa-user-secret" aria-hidden="true"></i> Quản lý tài khoản</h4>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="row mb-4">
+    @*<div class="col-md-3 offset-md-0 col-sm-4 mt-1">
+            <input type="text" class="form-control relative-icon-calendar date" id="txtFromDateUser" placeholder="Từ ngày" />
+            <i class="fa fa-calendar absolute-icon-calendar"></i>
+        </div>
+        <div class="col-md-3 offset-md-0 col-sm-4 mt-1">
+            <input type="text" class="form-control relative-icon-calendar date" id="txtToDateUser" placeholder="Đến ngày" />
+            <i class="fa fa-calendar absolute-icon-calendar"></i>
+        </div*@
+    <div class="col-md-4 col-sm-4 col-12 mt-1">
+        <input type="text" class="form-control" id="txtPhoneUser" onchange="searchUser();" placeholder="Số điện thoại, Tên người dùng" />
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <select class="form-control" onchange="searchUser();" id="slRole">
+            <option>Vai trò</option>
+            <option value="@SystemParam.ROLE_EDITOR">Biên tập</option>
+            <option value="@SystemParam.ROLE_ACCOUNTANT">Kế toán</option>
+        </select>
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <input class="form-control relative-icon-calendar date" id="txtFromDate" onchange="searchUser();" placeholder="Từ ngày" />
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <input class="form-control relative-icon-calendar date" id="txtToDate" onchange="searchUser();" placeholder="Đến ngày" />
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <select class="form-control" onchange="searchUser();" id="slStatus">
+            <option>Trạng thái</option>
+            <option value="@SystemParam.STATUS_NO_ACTIVE">Ngưng hoạt động</option>
+            <option value="@SystemParam.STATUS_ACTIVE">Hoạt động</option>
+        </select>
+    </div>
+</div>
+<div class="row mb-4" style="text-align: right">
+    @*<div class="col-md-2 offset-md-8 col-sm-3 col-6  mt-1">
+            <button class="btn btn-search btn-block" onclick="searchUser()" id="searchUser"><i class="fa fa-search"></i> Tìm kiếm</button>
+        </div>*@
+    <div class="col-md-12 col-sm-12 col-12 mt-1">
+        <button class="btn btn-primary px-3" onclick="addUser();"><i class="fa fa-plus"></i> Thêm tài khoản</button>
+        @*<button type="button" class="btn btn-search btn-block" data-toggle="modal" data-target="#createUser"><i class="fa fa-fw fa-plus"></i> Thêm mới</button>*@
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12" id="tableUser">
+        @{
+            Html.RenderAction("Search", "User", new { Page = 1, Phone = "", Role = "" });
+        }
+    </div>
+</div>
+@* Thêm mới tài khoản *@
+<div id="createUser" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-user-secret" aria-hidden="false"></i> Thêm tài khoản</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <label>Tên người dùng</label>*
+                        <input class="form-control" id="txtNameCreateUser" placeholder="Nhập tên người dùng" />
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <label>Số điện thoại</label>*
+                        <input class="form-control" id="txtPhoneCreateUser" placeholder="Nhập số điện thoại" maxlength="10" />
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <label>Giới tính</label>*
+                        <select class="form-control" onchange="searchUser();" id="slSex">
+                            <option value="0">Nam</option>
+                            <option value="1">Nữ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <label>Địa chỉ nhà</label>*
+                        <input class="form-control" id="txtAddress" placeholder="Địa chỉ nhà" maxlength="10" />
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <label>Mật khẩu</label>*
+                        <div class="input-group" id="show_hide_password">
+                            <input class="form-control" type="password" id="txtPasswordCreateUser" />
+                            <div class="input-group-addon">
+                                <a href=""><i class="fa fa-eye-slash btn btn-secondary" aria-hidden="true" style="font-size:24px"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <label>Xác nhận mật khẩu</label>*
+                        <div class="input-group" id="confirmPassword">
+                            <input class="form-control" type="password" id="txtconfirmPasswordCreateUser" />
+                            <div class="input-group-addon">
+                                <a href=""><i class="fa fa-eye-slash btn btn-secondary" aria-hidden="true" style="font-size:24px"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <label>Ảnh</label>*
+                        <div class="news">
+                            <div class="article" id="AddLogoPlace">
+                                <img id="imgUser" src="/Uploads/files/add_img.png" class="col-md-12 px-0 contentImg" alt="your image" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary px-3" onclick="createUser()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="divUserDetail">
+
+</div>
+
+<script>
+    $("#txtPhoneUser").keypress(function (e) {
+        var key = e.which;
+        if (key == 13) {
+            $("#searchUser").click();
+        }
+    });
+    $(document).ready(function () {
+        $("#show_hide_password a").on('click', function (event) {
+            event.preventDefault();
+            if ($('#show_hide_password input').attr("type") == "text") {
+                $('#show_hide_password input').attr('type', 'password');
+                $('#show_hide_password i').addClass("fa-eye-slash");
+                $('#show_hide_password i').removeClass("fa-eye");
+            } else if ($('#show_hide_password input').attr("type") == "password") {
+                $('#show_hide_password input').attr('type', 'text');
+                $('#show_hide_password i').removeClass("fa-eye-slash");
+                $('#show_hide_password i').addClass("fa-eye");
+            }
+        });
+    });
+
+    $("#add_logo_place").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            $("#AddImgLogoPlace ").remove();
+            $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+            var url = window.location.origin + fileUrl;
+            $('#txtAddLogoPlace').val(url);
+        }
+        fider.popup();
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#confirmPassword a").on('click', function (event) {
+            event.preventDefault();
+            if ($('#confirmPassword input').attr("type") == "text") {
+                $('#confirmPassword input').attr('type', 'password');
+                $('#confirmPassword i').addClass("fa-eye-slash");
+                $('#confirmPassword i').removeClass("fa-eye");
+            } else if ($('#confirmPassword input').attr("type") == "password") {
+                $('#confirmPassword input').attr('type', 'text');
+                $('#confirmPassword i').removeClass("fa-eye-slash");
+                $('#confirmPassword i').addClass("fa-eye");
+            }
+        });
+    });
+</script>

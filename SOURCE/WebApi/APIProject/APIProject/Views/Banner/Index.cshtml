@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Data.Utils
+<div class="breadcrumb-holder">
+    <div class="row mt-5">
+        <div class="col-md-10 col-sm-12 col-12 text-dark mt-2">
+            <h4><i class="fa fa-flag ic-menu"></i> Quản lý banner, chính sách</h4>
+        </div>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-md-4 col-sm-4 col-12 mt-1">
+        <input value="" type="text" id="titleBanner" class="form-control" placeholder="Nhập tiêu đề banner" onkeyup="SearchBanner()" />
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <select class="form-control" onchange="SearchBanner();" id="slStatus">
+            <option>Trạng thái</option>
+            <option value="@SystemParam.STATUS_NO_ACTIVE">Ngưng hoạt động</option>
+            <option value="@SystemParam.STATUS_ACTIVE">Hoạt động</option>
+        </select>
+    </div>
+    <div class="col-md-3 col-sm-3 col-12 mt-1">
+        <input type="date" data-date-format="dd/MM/yyyy" id="fromDateBanner" class="form-control" onchange="SearchBanner();" placeholder="Từ ngày" />
+    </div>
+    <div class="col-md-3 col-sm-3 col-12 mt-1">
+        <input type="date" id="toDateBanner" class="form-control" data-date-format="dd/MM/yyyy" onchange="SearchBanner();" placeholder="Đến ngày" />
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <select class="form-control" onchange="SearchBanner();" id="slType">
+            <option>Loại Banner</option>
+            <option value="@SystemParam.NEWS_TYPE_BANNER">@SystemParam.NEWS_TYPE_BANNER_STRING</option>
+            <option value="@SystemParam.NEWS_TYPE_POLICY">@SystemParam.NEWS_TYPE_POLICY_STRING</option>
+        </select>
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <select class="form-control" onchange="SearchBanner();" id="slTypeSend">
+            <option>Trạng thái banner</option>
+            <option value="@SystemParam.TYPESEND_BANNER_DRAFT">@SystemParam.TYPESEND_BANNER_DRAFT_STRING</option>
+            <option value="@SystemParam.TYPESEND_BANNER">@SystemParam.TYPESEND_BANNER_STRING</option>
+        </select>
+    </div>
+    <div class="col-md-8 col-sm-8 col-12 mt-1" style="text-align: right">
+        <button class="btn btn-primary" onclick="resetBanner();"><i class="fa fa-plus"></i>Thêm mới</button>
+    </div>
+</div>
+    <div class="row">
+        <div class="col-md-12" id="tableBanner">
+            @{Html.RenderAction("SearchBanner", "Banner", new { Page = 1, title = "", fromDate = "", toDate = "" }); }
+        </div>
+    </div>
+
+    <div id="UpdateBanner">
+
+    </div>
+<script>
+    $("#add_logo_place").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            $("#AddImgLogoPlace ").remove();
+            $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+            var url = window.location.origin + fileUrl;
+            $('#txtAddLogoPlace').val(url);
+        }
+        fider.popup();
+    });
+</script>

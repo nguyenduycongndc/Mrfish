@@ -1,0 +1,90 @@
+﻿@using Data.Model.APIWeb
+@using Data.Utils
+@using PagedList.Mvc
+@model  PagedList.IPagedList<UserDetailOutputModel>
+<table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+    <thead class="text-center text-white bg-thead">
+        <tr>
+            <th>STT</th>
+            <th>Tài khoản đăng nhập</th>
+            <th>Tên người dùng</th>
+            <th>Số điện thoại</th>
+            <th>Vài trò</th>
+            <th>Trạng thái</th>
+            <th>Ngày tạo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+
+        @{
+            if (Model.Count() <= 0)
+            {
+                <tr>
+                    <td colspan="8">Không có dữ liệu.</td>
+                </tr>
+            }
+            else
+            {
+
+                int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                foreach (var data in Model)
+                {
+                    <tr>
+                        <td>@stt</td>
+                        <td>@data.Phone</td>
+                        <td>@data.UserName</td>
+                        <td>@data.Phone</td>
+                        <td>
+                            @{
+                                switch (@data.Role)
+                                {
+                                    case SystemParam.ROLE_ADMIN: <p style="margin-bottom: 0">Admin</p> break;
+                                    case SystemParam.ROLE_EDITOR: <p style="margin-bottom: 0">Biên tập</p> break;
+                                    case SystemParam.ROLE_ACCOUNTANT: <p style="margin-bottom: 0">Kế toán</p> break;
+                                }
+                            }
+                        </td>
+                        <td>
+                            @{
+                                switch (@data.Status)
+                                {
+                                    case SystemParam.STATUS_NO_ACTIVE: <p style="margin-bottom: 0">Ngưng hoạt động</p> break;
+                                    case SystemParam.STATUS_ACTIVE: <p style="margin-bottom: 0">Hoạt động</p> break;
+                                }
+                            }
+                        </td>
+                        <td>@data.CraeteDateStr</td>
+                        <td>
+                            <a data-toggle="tooltip" data-placement="top" title="Làm lại" class="cursor-pointer mr-2" onclick="refreshUser(@data.UserID)">
+                                <i class="btnRefresh fa fa-fw fa-refresh"></i>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Sửa tài khoản." class="cursor-pointer mr-2" onclick="getUserDetail(@data.UserID)">
+                                <i class="btnEdit fa fa-fw fa-edit"></i>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Xóa tài khoản." class="cursor-pointer" onclick="deleteUser(@data.UserID)">
+                                <i class="btnDelete fa fa-fw fa-trash-o"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    stt++;
+
+                }
+            }
+        }
+
+    </tbody>
+</table>
+<input type="hidden" id="txtPageCurrent" value="@ViewBag.PageCurrent" class="txtPageCurrent" />
+<div class="col-md-12">
+    <div class="row float-right">
+        @*phân trang*@
+        @Html.PagedListPager(Model, Page => Url.Action("Search", new { Page, Phone = ViewBag.Phone, FromDate = ViewBag.FromDate, ToDate = ViewBag.ToDate }),
+     PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+     {
+         HttpMethod = "GET",
+         UpdateTargetId = "tableUser"
+     })
+     )
+    </div>
+</div>

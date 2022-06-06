@@ -1,0 +1,117 @@
+﻿
+@using Data.DB;
+@using Data.Model.APIWeb
+@using Data.Utils
+@using PagedList.Mvc
+@model PagedList.IPagedList<VoucherCustomerNewModel>
+
+<table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+    <thead class="text-center text-white bg-thead">
+        <tr>
+            <th>STT</th>
+            <th>Mã voucher</th>
+            <th>Tên voucher</th>
+            <th>Loại mã</th>
+            <th>Mức giảm</th>
+            <th>Số lượng còn lại</th>
+            <th>Số lượng quy định</th>
+            <th>Hạng khách hàng</th>
+            <th class="widthCreatedDate">Ngày bắt đầu</th>
+            <th class="widthCreatedDate">Ngày kết thúc</th>
+            <th>Trạng thái</th>
+            <th class="widthCreatedDate">Ngày tạo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody ">
+        @{
+            if (Model.Count <= 0)
+            {
+                <tr class="text-center">
+                    <td colspan="14">Không có dữ liệu.</td>
+                </tr>
+            }
+            else
+            {
+                int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                foreach (var data in Model)
+                {
+                    <tr>
+                        <td class="text-center">@stt</td>
+                        <td>@data.Code </td>
+                        <td>@data.Name </td>
+                        @{
+                            switch (data.TypeDiscount)
+                            {
+                                case SystemParam.COUPON_DISCOUNT_MONEY:
+                                    <td class="text-center">Theo tiền</td>
+                                    break;
+                                case SystemParam.COUPON_DISCOUNT_PERCENT:
+                                    <td class="text-center">Theo %</td>
+                                    break;
+                                default:
+                                    break;
+
+                            }
+                        }
+                    <td>@String.Format("{0:n0}", data.Discount)</td>
+                        <td>@data.Remain</td>
+                        <td>@data.Quantity</td>
+                        <td style="vertical-align: inherit;">
+                            @*@{
+                                    switch (data.RankID)
+                                    {
+                                        case SystemParam.RANK_MEMBERSHIP: <p style="margin-bottom: 0">Thành viên</p> break;
+                                        case SystemParam.RANK_SILVER: <p style="margin-bottom: 0">Bạc</p> break;
+                                        case SystemParam.RANK_GOLDEN: <p style="margin-bottom: 0">Vàng</p> break;
+                                        case SystemParam.RANK_DIAMOND: <p style="margin-bottom: 0">Kim cương</p> break;
+                                    }
+                                }*@
+
+                            <p style="margin-bottom: 0">@data.RankName</p>
+                        </td>
+                        <td>@data.FromDate.Value.ToString("dd/MM/yyyy")</td>
+                        <td>@data.ToDate.Value.ToString("dd/MM/yyyy")</td>
+                        @{
+                            switch (data.Status)
+                            {
+                                case SystemParam.ACTIVE:
+                                    <td style="color: #000000" class="text-center">Đang hoạt động</td>
+                                    break;
+                                case SystemParam.ACTIVE_FALSE:
+                                    <td style="color: #97271C" class="text-center">Ngưng hoạt động</td>
+                                    break;
+                                default:
+                                    break;
+
+                            }
+                        }
+                        <td>@data.CreateDate.ToString("dd/MM/yyyy hh:mm")</td>
+                        <td class="width2btn">
+                            <a data-placement="top" title="Chi tiết voucher." class="cursor-pointer" href="@Url.Action("ShowEditVoucherCustomer", "VoucherCustomer", new { ID = data.ID})">
+                                <i class="btnEdit fa fa-fw fa-edit"></i>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Xóa Voucher" class="cursor-pointer" onclick="DeleteVoucherCustomer(@data.ID)">
+                                <i class="btnDelete fa fa-fw fa-trash-o"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    stt++;
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<div class="col-md-12">
+    <div class="row float-right">
+        @*phân trang*@
+        @Html.PagedListPager(Model, Page => Url.Action("SearchVoucherCustomer", new { Page, nameVoucher = ViewBag.nameVoucher, fromDate = ViewBag.fromDate, toDate = ViewBag.toDate, status = ViewBag.status, typeDiscount = ViewBag.typeDiscount, rank = ViewBag.rank }),
+     PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+     {
+         HttpMethod = "GET",
+         UpdateTargetId = "tableVoucherCustomer"
+     })
+     )
+    </div>
+</div>

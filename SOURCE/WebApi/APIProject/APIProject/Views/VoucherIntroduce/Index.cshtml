@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Data.Utils
+@using Data.DB
+<div class="breadcrumb-holder">
+    <div class="row mt-5">
+        <div class="col-md-10 col-sm-12 col-12 text-dark mt-2">
+            <h4><i class="fa fa-ticket ic-menu"></i>Voucher giới thiệu</h4>
+        </div>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-md-4 col-sm-4 col-12 mt-1">
+        <input value="" type="text" id="nameVoucherIntroduce" class="form-control" placeholder="Mã/Tên voucher" onkeyup="SearchVoucherIntroduce()" />
+    </div>
+    @*<div class="col-md-2 col-sm-2 col-12 mt-1">
+            <select class="form-control" onchange="SearchVoucherIntroduce();" id="slStatusVoucher">
+                <option>Trạng thái</option>
+                <option value="@SystemParam.STATUS_NO_ACTIVE">Ngưng hoạt động</option>
+                <option value="@SystemParam.STATUS_ACTIVE">Hoạt động</option>
+            </select>
+        </div>*@
+    <div class="col-md-3 col-sm-3 col-12 mt-1">
+        <input type="date" data-date-format="dd/MM/yyyy" id="fromDateVoucherIntroduce" class="form-control" onchange="SearchVoucherIntroduce();" placeholder="Từ ngày" />
+    </div>
+    <div class="col-md-3 col-sm-3 col-12 mt-1">
+        <input type="date" id="toDateVoucherIntroduce" class="form-control" data-date-format="dd/MM/yyyy" onchange="SearchVoucherIntroduce();" placeholder="Đến ngày" />
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <select class="form-control" onchange="SearchVoucherIntroduce();" id="slTypeDiscountVoucherIntroduce">
+            <option>Loại mã</option>
+            <option value="@SystemParam.COUPON_DISCOUNT_MONEY">Theo tiền</option>
+            <option value="@SystemParam.COUPON_DISCOUNT_PERCENT">Theo %</option>
+        </select>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-md-12 col-sm-12 col-12 mt-1" style="text-align: right">
+        <button class="btn btn-primary" onclick="resetVoucherIntroduce();"><i class="fa fa-plus"></i>Thêm mới</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12" id="tableVoucherIntroduce">
+        @{Html.RenderAction("SearchVoucherIntroduce", "VoucherIntroduce", new { Page = 1, nameVoucher = "", fromDate = "", toDate = "" }); }
+    </div>
+</div>
+
+<div id="UpdateVoucherIntroduce">
+
+</div>
+<script>
+    $("#add_logo_place").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            $("#AddImgLogoPlace ").remove();
+            $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+            var url = window.location.origin + fileUrl;
+            $('#txtAddLogoPlace').val(url);
+        }
+        fider.popup();
+    });
+</script>

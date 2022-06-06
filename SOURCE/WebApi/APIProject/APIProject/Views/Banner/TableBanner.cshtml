@@ -1,0 +1,106 @@
+﻿
+@using Data.DB;
+@using Data.Model.APIWeb
+@using Data.Utils
+@using PagedList.Mvc
+@model PagedList.IPagedList<ListBannerModel>
+
+<table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+    <thead class="text-center text-white bg-thead">
+        <tr>
+            <th>STT</th>
+            <th>Tiêu đề</th>
+            <th>Loại banner</th>
+            <th>Trạng thái banner</th>
+            <th>Trạng thái hoạt động</th>
+            <th class="widthCreatedDate">Ngày tạo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody ">
+        @{
+            if (Model.Count <= 0)
+            {
+                <tr class="text-center">
+                    <td colspan="7">Không có dữ liệu.</td>
+                </tr>
+            }
+            else
+            {
+                int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                foreach (var data in Model)
+                {
+                    <tr>
+                        <td class="text-center">@stt</td>
+                        <td>@data.Title </td>
+                        @{
+                            switch (data.Type)
+                            {
+                                case SystemParam.NEWS_TYPE_BANNER:
+                                    <td style="color: #000000" class="text-center">@SystemParam.NEWS_TYPE_BANNER_STRING</td>
+                                    break;
+                                case SystemParam.NEWS_TYPE_POLICY:
+                                    <td style="color: #97271C" class="text-center">@SystemParam.NEWS_TYPE_POLICY_STRING</td>
+                                    break;
+                                default:
+                                    break;
+
+                            }
+                        }
+                        @{
+                            switch (data.TypeSend)
+                            {
+                                case SystemParam.TYPESEND_BANNER_DRAFT:
+                                    <td style="color: #000000" class="text-center">@SystemParam.TYPESEND_BANNER_DRAFT_STRING</td>
+                                    break;
+                                case SystemParam.TYPESEND_BANNER:
+                                    <td style="color: #97271C" class="text-center">@SystemParam.TYPESEND_BANNER_STRING</td>
+                                    break;
+                                default:
+                                    break;
+
+                            }
+                        }
+                        @{
+                            switch (data.Status)
+                            {
+                                case SystemParam.ACTIVE:
+                                    <td style="color: #000000" class="text-center">Đang hoạt động</td>
+                                    break;
+                                case SystemParam.ACTIVE_FALSE:
+                                    <td style="color: #97271C" class="text-center">Ngưng hoạt động</td>
+                                    break;
+                                default:
+                                    break;
+
+                            }
+                        }
+                        <td>@data.GetStringCreateDate</td>
+                        <td class="width2btn">
+                            <a data-toggle="tooltip" data-placement="top" title="Sửa banner" class="cursor-pointer" onclick="LoadBanner(@data.ID)">
+                                <i class="btnEdit fa fa-fw fa-edit"></i>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Xóa banner" class="cursor-pointer" onclick="DeleteBanner(@data.ID)">
+                                <i class="btnDelete fa fa-fw fa-trash-o"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    stt++;
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<div class="col-md-12">
+    <div class="row float-right">
+        @*phân trang*@
+        @Html.PagedListPager(Model, Page => Url.Action("SearchBanner", new { Page, title = ViewBag.title, fromDate = ViewBag.fromDate, toDate = ViewBag.toDate, Status = ViewBag.Status, typeSend = ViewBag.typeSend, type = ViewBag.type }),
+     PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+     {
+         HttpMethod = "GET",
+         UpdateTargetId = "tableBanner"
+     })
+     )
+    </div>
+</div>

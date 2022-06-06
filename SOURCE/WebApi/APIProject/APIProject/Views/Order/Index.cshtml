@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Data.Utils
+@*<script src="~/Scripts/jquery.maskMoney.min.js"></script>*@
+<div class="breadcrumb-holder">
+    <div class="row mt-5">
+        <div class="col-md-10 col-sm-12 col-12 text-dark mt-2">
+            <h4>
+                <i class="fa fa-shopping-basket ic-menu"></i>
+                Đơn hàng
+            </h4>
+        </div>
+        @*<div class="col-md-2 col-sm-12 col-12 mt-2">
+                <button class="btn btn-create btn-block " data-target="#addCarCaterogy" data-toggle="modal" onclick="exportListOrderExcel();"> <i class="fa fa-file-excel-o" aria-hidden="true"></i> Xuất Excel</button>
+            </div>*@
+    </div>
+</div>
+
+<div class="row ">
+
+    <div class="col-md-3 col-sm-12 mt-2">
+        <input class="form-control" onkeyup="searchOrder();" placeholder="Nhập mã đơn, người nhận, khách hàng, Sđt" id="txtCusPhone" />
+    </div>
+    <div class="col-md-3 col-sm-12 mt-2">
+        <select class="form-control" id="slStatus" onchange="searchOrder();">
+            <option>Trạng thái đơn hàng</option>
+            <option value="@SystemParam.AWAIT_STATUS_ORDER">Chờ xác nhận</option>
+            <option value="@SystemParam.PROCESSING_STATUS_ORDER">Đang thực hiện</option>
+            <option value="@SystemParam.COMPLETED_STATUS_ORDER">Đã hoàn thành</option>
+            <option value="@SystemParam.CANCEL_STATUS_ORDER">Đã hủy</option>
+            <option value="@SystemParam.AGAIN_STATUS_ORDER">Đã hoàn tiền</option>
+        </select>
+    </div>
+    <div class="col-md-3 col-sm-12 mt-2">
+        <input type="date"  id="txtFromDate" class="form-control" onchange="searchOrder();" placeholder="Từ ngày" />
+    </div>
+
+    <div class="col-md-3 col-sm-12 mt-2">
+        <input type="date"  id="txtToDate" class="form-control" onchange="searchOrder();" placeholder="Đến ngày" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 col-sm-12 mt-2">
+        <select class="form-control" id="slPaymentType" onchange="searchOrder();">
+            <option>Hình thức thanh toán</option>
+            <option value="@SystemParam.PAYMENT_TYPE_ON_DELIVERY">Tiền mặt</option>
+            <option value="@SystemParam.PAYMENT_TYPE_MOMO">Chuyển khoản, MOMO</option>
+            <option value="@SystemParam.PAYMENT_TYPE_VNPAY">Thanh toán VNPAY</option>
+        </select>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-12 col-12 mt-2" style="text-align: right">
+        <button class="btn btn-success px-3" data-target="#addCarCaterogy" data-toggle="modal" onclick="exportListOrderExcel();"> <i class="fa fa-download" aria-hidden="true" @*class="fa fa-file-excel-o" aria-hidden="true"*@></i> Xuất Excel</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 col-12  mt-2">
+        <div class=" text-danger font-weight-bold" style="font-size: 25px;">Tổng doanh số : @String.Format("{0:0,0 VNĐ}", @ViewBag.Revenue.Result) </div>
+    </div>
+</div>
+<div class="row ">
+    <div class="col-md-12 col-sm-12 mt-2" id="list">
+        @{
+            Html.RenderAction("Search", "Order", new { Page = 1, fromDate = "", toDate = "", Phone = "" });
+        }
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#txtFromDate").on('keyup', function () {
+            if ($("#txtFromDate").val() == '')
+                $("#btnSearchOrder").click();
+        });
+
+        $("#txtToDate").on('keyup', function () {
+            if ($("#txtToDate").val() == '')
+                $("#btnSearchOrder").click();
+        });
+
+        $("#txtCusPhone").on('keyup', function () {
+            if ($("#txtCusPhone").val() == '')
+                $("#btnSearchOrder").click();
+        });
+
+        $("#slStatus").on('change', function (e) {
+            $("#btnSearchOrder").click();
+        });
+    })
+    // ấn nút Enter để tìm kiếm
+    $("#txtCusPhone").keypress(function (e) {
+        var key = e.which;
+        if (key == 13) {
+            $("#btnSearchOrder").click();
+        }
+    });
+</script>
+

@@ -1,0 +1,62 @@
+﻿@using Data.DB
+@using Data.Model.APIWeb
+@using PagedList.Mvc
+@using PagedList
+@model IPagedList<MemberPointHistoryWebModel>
+
+<div class="col-md-12">
+    <table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+        <thead class="text-center text-white bg-thead">
+            <tr>
+                <th class="width-stt">STT</th>
+                <th>Tác vụ</th>
+                <th>Số điểm</th>
+                <th>Mã đơn hàng</th>
+                <th>Ngày tạo</th>
+                <th>Chi tiết</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @{
+                if (Model.Count() <= 0)
+                {
+                    <tr>
+                        <td colspan="10">Không có dữ liệu.</td>
+                    </tr>
+                }
+                else
+                {
+                    int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                    foreach (var data in Model)
+                    {
+                        <tr>
+                            <td>@stt</td>
+                            <td>Cộng điểm</td>
+                            <td>@data.Point</td>
+                            <td>@data.OrderCode</td>
+                            <td>@data.Date.Value.ToString("dd/MM/yyyy hh:mm")</td>
+                            <td>
+                                <a data-placement="top" title="Chi tiết đơn hàng." class="cursor-pointer" href="@Url.Action("ShowEditOrderNew", "Order", new { ID = data.OrderID})">
+                                    <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        stt++;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<div class="col-md-12">
+    <div class="row float-right mr-1">
+        @*phân trang*@
+        @Html.PagedListPager(
+            Model,
+            page => Url.Action("SearchMemberPointHistory", "Customer", new { Page = page, cusID = ViewBag.cusID }),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "ListMemberPointHistory" })
+            )
+    </div>
+</div>

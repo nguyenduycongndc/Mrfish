@@ -1,0 +1,1241 @@
+{
+	"info": {
+		"_postman_id": "caed30de-a907-4b96-92db-4f62b9ffe04e",
+		"name": "MrFish",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Đăng nhập",
+			"item": [
+				{
+					"name": "Đăng nhập",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Value\":\"0903106666\",\r\n    \"Password\":\"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/LoginApp",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"LoginApp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "đăng suất",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}Logout",
+							"host": [
+								"{{local}}Logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Đăng ký",
+			"item": [
+				{
+					"name": "Đăng ký",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CustomerName\": \"Congacon\",\r\n    \"Phone\": \"0866576788\",\r\n    \"Password\": \"123456\",\r\n    \"Email\": \"congacon@gmail.com\",\r\n    \"Code\": \"0866576702\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Url}}register",
+							"host": [
+								"{{Url}}register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Mật khẩu",
+			"item": [
+				{
+					"name": "quên mật khẩu",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Email\":\"ndcong142395@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}ForgotPass",
+							"host": [
+								"{{local}}ForgotPass"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "thay đổi mật khẩu khi quên mk",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNzAiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMDg2NjU3Njc4OCIsImp0aSI6ImRkZGJjZGQxLWJkMmUtNGIwNi1iNTYzLWZiMDgxMTE5YTU4MSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMTcwIiwiZXhwIjoxNjI3NjI3NzU5LCJpc3MiOiJodHRwOi8vOjo4MCIsImF1ZCI6Imh0dHA6Ly86OjgwIn0.cJgZW9RRV9qxPLP52oPTMybDaULM5mAa1mDEaVWC-mU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CustomerId\": 170,\r\n    \"newPass\":\"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}ChangePassForgot",
+							"host": [
+								"{{local}}ChangePassForgot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "thay đổi mật khẩu",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNzAiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMDg2NjU3Njc4OCIsImp0aSI6ImM5MzVhNDY0LTkwY2MtNDlhOC05MTc0LTI5OTdkOGIxMGNmNyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMTcwIiwiZXhwIjoxNjI3NTQ4NzI2LCJpc3MiOiJodHRwOi8vOjo4MCIsImF1ZCI6Imh0dHA6Ly86OjgwIn0.P_Ktw2roj-IVK34gh53KgGP0fhqsP0epPn1myX_FNtI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":\"daiichivn\",\r\n    \"newPassword\":\"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}ChangePass",
+							"host": [
+								"{{local}}ChangePass"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CheckOTP",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}CheckOTP?otp=251741",
+							"host": [
+								"{{local}}CheckOTP"
+							],
+							"query": [
+								{
+									"key": "otp",
+									"value": "251741"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Trang chủ Home",
+			"item": [
+				{
+					"name": "Home",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/Home",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"Home"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Khác",
+			"item": [
+				{
+					"name": "Danh sách tỉnh thành",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}ListProvince",
+							"host": [
+								"{{local}}ListProvince"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Danh sách quân huyện",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}ListDistrict?ProvinceID=1",
+							"host": [
+								"{{server}}ListDistrict"
+							],
+							"query": [
+								{
+									"key": "ProvinceID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Danh sách phường xã",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}ListWards?DistrictID=1",
+							"host": [
+								"{{local}}ListWards"
+							],
+							"query": [
+								{
+									"key": "DistrictID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sản phẩm",
+			"item": [
+				{
+					"name": "GetListProduct",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/GetListProduct?page=1&limit=100",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetListProduct"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "search",
+									"value": "vo",
+									"disabled": true
+								},
+								{
+									"key": "isHot",
+									"value": "0",
+									"description": "1: sản phẩm bán chạy , 0 : sp bth ",
+									"disabled": true
+								},
+								{
+									"key": "orderPrice",
+									"value": "1",
+									"description": "1: giá từ thấp đến cao , 0 : giá từ cao đến thấp",
+									"disabled": true
+								},
+								{
+									"key": "isFlashSale",
+									"value": "1",
+									"description": "1: flashSale , 0 : tất cả",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProductDetail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/GetProductDetail?ID=131",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetProductDetail"
+							],
+							"query": [
+								{
+									"key": "ID",
+									"value": "131"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProductRelative",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/GetProductRelative?ID=112",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetProductRelative"
+							],
+							"query": [
+								{
+									"key": "ID",
+									"value": "112"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Giỏ hàng",
+			"item": [
+				{
+					"name": "GetListCart",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/GetListCart",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetListCart"
+							],
+							"query": [
+								{
+									"key": "ID",
+									"value": "39",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddCart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ProductID\": 133,\r\n    \"Quantity\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/AddCart",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"AddCart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateCart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CartID\":36,\r\n    \"Quantity\":3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/UpdateCart",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"UpdateCart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CartID\":[1,2]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/DeleteCart",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"DeleteCart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCartQuantity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/GetCartQuantity",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetCartQuantity"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Người dùng",
+			"item": [
+				{
+					"name": "Thông tin cá nhân",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/UserInfor",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"UserInfor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Thay đổi thông tin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"CustomerName\": \"Nguyễn Minh Quang\",\r\n\"Phone\":\"095324554\",\r\n\"Email\": \"quang@gmail.com\",\r\n\"DOBStr\":\"12/07/2000\",\r\n\"Sex\":1 // 1 : Nam , 0 : Nữ\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}UpdateUser",
+							"host": [
+								"{{local}}UpdateUser"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cập nhật ảnh avatar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "File",
+									"type": "file",
+									"src": "/C:/Users/H/OneDrive/Pictures/iphone-xs-max-gold-600x600.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/UploadAvartar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"UploadAvartar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Thông tin người nhận",
+			"item": [
+				{
+					"name": "GetListReceiveAddress",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/GetListReceiveAddress",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetListReceiveAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetReceiveAddressDefault",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/GetReceiveAddressDefault",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetReceiveAddressDefault"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetReceiveAddressDetail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/GetReceiveAddressDetail?ID=6",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetReceiveAddressDetail"
+							],
+							"query": [
+								{
+									"key": "ID",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddReceiveAddress",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Trần Việt Anh Phương\",\r\n    \"Phone\":\"0767332485\",\r\n    \"ProvinceID\":1,\r\n    \"DistrictID\":1,\r\n    \"WardID\":4,\r\n    \"Address\":\"G2 Five star Kim Giang\",\r\n    \"IsDefault\":0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/AddReceiveAddress",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"AddReceiveAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateReceiveAddress",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\":6,\r\n    \"Name\": \"Trần Việt Anh Phương\",\r\n    \"Phone\":\"0767332485\",\r\n    \"ProvinceID\":1,\r\n    \"DistrictID\":1,\r\n    \"WardID\":4,\r\n    \"Address\":\"G2 Five star Kim Giang\",\r\n    \"IsDefault\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/UpdateReceiveAddress",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"UpdateReceiveAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteReceiveAddress",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\":5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/DeleteReceiveAddress",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"DeleteReceiveAddress"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Danh mục",
+			"item": [
+				{
+					"name": "GetListCategory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/GetListCategory",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"GetListCategory"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Đơn Hàng",
+			"item": [
+				{
+					"name": "CreateOrder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CartID\":[153],\r\n    \"ReceiveAddressID\":6,\r\n    \"PaymentType\":3, // 1:TT tiền mặt , 2:TT momo , 3:TT VNPay\r\n    \"Note\":\"Giao nhanh giúp mình\",\r\n    \"CouponID\":1 // Không bắt buộc \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/CreateOrder",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"CreateOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetListOrder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/GetListOrder?page=1&limit=10&status=-0",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetListOrder"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "-0",
+									"description": "0:Chờ xác nhận , 1: Đang thực hiện , 2: Hoàn thành , -1 : Hủy , -2 : Hoàn tiền"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetOrderDetail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/GetOrderDetail?ID=104",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetOrderDetail"
+							],
+							"query": [
+								{
+									"key": "ID",
+									"value": "104"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CancleOrder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\":25\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/CancleOrder",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"CancleOrder"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Mã giảm giá",
+			"item": [
+				{
+					"name": "GetListCoupon",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/GetListCoupon",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"GetListCoupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCouponDetail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/GetCouponDetail?ID=4",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"GetCouponDetail"
+							],
+							"query": [
+								{
+									"key": "ID",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lịch Sử Tích Điểm",
+			"item": [
+				{
+					"name": "GetListPointHistory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/GetListPointHistory?Page=1&Limit=10",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetListPointHistory"
+							],
+							"query": [
+								{
+									"key": "Page",
+									"value": "1"
+								},
+								{
+									"key": "Limit",
+									"value": "10"
+								},
+								{
+									"key": "FromDate",
+									"value": "17/08/2020",
+									"disabled": true
+								},
+								{
+									"key": "ToDate",
+									"value": "01/09/2020",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Banner , Chính sách",
+			"item": [
+				{
+					"name": "GetListNews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/GetListNews?type=2",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetListNews"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "2",
+									"description": "1: Banner , 2: Chính sách"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetNewsDetail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/GetNewsDetail?ID=203",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"GetNewsDetail"
+							],
+							"query": [
+								{
+									"key": "ID",
+									"value": "203"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lịch sử giới thiệu",
+			"item": [
+				{
+					"name": "GetListCustomerRefer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/GetListCustomerRefer?Page=1&Limit=10",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"GetListCustomerRefer"
+							],
+							"query": [
+								{
+									"key": "Page",
+									"value": "1"
+								},
+								{
+									"key": "Limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Thông báo",
+			"item": [
+				{
+					"name": "GetListNotification",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/GetListNotification?Page=1&Limit=10",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"GetListNotification"
+							],
+							"query": [
+								{
+									"key": "Page",
+									"value": "1"
+								},
+								{
+									"key": "Limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReadNotification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/ReadNotification?ID=1",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"ReadNotification"
+							],
+							"query": [
+								{
+									"key": "ID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

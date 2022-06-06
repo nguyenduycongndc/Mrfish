@@ -1,0 +1,75 @@
+﻿@using Data.DB
+@using Data.Model.APIWeb
+@using PagedList.Mvc
+@using PagedList
+@using Data.Utils
+@model IPagedList<ListOrderHistoryTableModel>
+
+<div class="col-md-12">
+    <table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+        <thead class="text-center text-white bg-thead">
+            <tr>
+                <th class="width-stt">STT</th>
+                <th>Trạng thái</th>
+                <th>Thời gian</th>
+                <th>Người thay đổi</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @{
+                if (Model.Count() <= 0)
+                {
+                    <tr>
+                        <td colspan="4">Không có dữ liệu.</td>
+                    </tr>
+                }
+                else
+                {
+                    int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                    foreach (var dt in Model)
+                    {
+                        <tr>
+                            <td>@stt</td>
+                            @{ if (@dt.Status == SystemParam.AWAIT_STATUS_ORDER)
+                                {
+                                    <td class="text-warning">Chờ xác nhận</td>
+                                }
+                                else if (@dt.Status == SystemParam.PROCESSING_STATUS_ORDER)
+                                {
+                                    <td class="text-primary">Đang thực hiện</td>
+                                }
+                                else if (@dt.Status == SystemParam.COMPLETED_STATUS_ORDER)
+                                {
+                                    <td class="text-success">Hoàn thành</td>
+                                }
+                                else if (@dt.Status == SystemParam.CANCEL_STATUS_ORDER)
+                                {
+                                    <td class="text-danger">Hủy</td>
+                                }
+                                else if (@dt.Status == SystemParam.AGAIN_STATUS_ORDER)
+                                {
+                                    <td class="" style="color:purple">Hoàn tiền</td>
+                                }
+                            }
+                            <td>@dt.CreateDate.ToString("dd/MM/yyyy")</td>
+                            <td>@dt.CreateByName</td>
+                        </tr>
+                        stt++;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<div class="col-md-12">
+    <div class="row float-right mr-1">
+        @*phân trang*@
+        @Html.PagedListPager(
+            Model,
+            page => Url.Action("searchListOrderHistory", "Order", new { Page = page, orderID = ViewBag.orderID }),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "ListOrderHistoryTable" })
+            )
+    </div>
+</div>

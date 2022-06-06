@@ -1,0 +1,90 @@
+﻿@using Data.Utils
+@using Data.Model.APIWeb
+@model RankEditNewModel
+
+<div class="modal fade" id="ModalEditRank" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-fw fa-shopping-cart"></i>Sửa hạng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="form_update_category" name="form_update_category">
+                    <input id="txtID" name="ID" value="@Model.ID" type="hidden" class="form-control" />
+                    <div class="row m-3">
+                        <label class="text-dark">Tên hạng:</label>&nbsp;
+                        <a>@Model.RankName</a>
+                    </div>
+                    @{
+                        if (Model.ID == 1)
+                        {
+                            <div class="row m-3">
+                                <label class="text-dark">Mức điểm quy định</label>
+                                <input type="text" class="form-control number" id="txtMaxPoint" name="Name" placeholder="Nhập mức điểm" value="@String.Format("{0:n0}",Convert.ToInt32(Model.MaxPoint))" disabled/>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row m-3">
+                                <label class="text-dark">Mức điểm quy định</label>
+                                <input type="text" class="form-control number" id="txtMaxPoint" name="Name" placeholder="Nhập mức điểm" value="@String.Format("{0:n0}",Convert.ToInt32(Model.MaxPoint))" />
+                            </div>
+                        }
+                    }
+                    <div class="row m-3">
+                        <label class="text-dark">Mức giảm</label>
+                        <input onkeypress='validateEdit(event)' type="text" class="form-control" id="txtDiscountPercent" name="Name" placeholder="Nhập mức điểm" value="@Model.DiscountPercent.ToString("0.##")%" />
+                        @*<input onkeypress='validateEdit(event)' type="text" class="form-control" id="txtDiscountPercent" name="Name" placeholder="Nhập mức điểm" value="@String.Format("{0}%", Convert.ToInt32(Model.DiscountPercent))" />*@
+                    </div>
+                    <div class="row m-3">
+                        <p class="mb-0 color-require"><label class="text-dark">Mô tả</label> </p>
+                        <textarea class="form-control" rows="3" id="descriptions">@Model.Descriptions</textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary px-3" onclick="SaveEditRank(@Model.ID);">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.number').keyup(function () {
+            $val = cms_decode_currency_format($(this).val());
+            $(this).val(cms_encode_currency_format($val));
+        });
+    });
+    function cms_encode_currency_format(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    }
+
+    function cms_decode_currency_format(obs) {
+        if (obs == '')
+            return 0;
+        else
+            return parseInt(obs.replace(/,/g, ''));
+    }
+    function validateEdit(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\.|\%/;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+</script>

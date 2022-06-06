@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Data.Utils
+
+<div class="breadcrumb-holder">
+    <div class="row mt-5">
+        <div class="col-md-10 col-sm-12 col-12 text-dark mt-2">
+            <h4><i class="fa fa-gift ic-menu"></i> Sản phẩm khuyến mại</h4>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4 col-sm-4 col-12 mt-1">
+        <input value="" type="text" id="itemSaleName" class="form-control" placeholder="Nhập tên hoặc mã sản phẩm" onkeyup="SearchItemSale()" />
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <select id="cbbCategorySearch" class="form-control" onchange="SearchItemSale();">
+            @{
+                <option value="1">Tất cả danh mục</option>
+                foreach (var p in ViewBag.listCategory)
+                {
+                    <option value="@p.Name">@p.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <input type="date" data-date-format="dd/MM/yyyy" id="fromDateItemSale" class="form-control" onchange="SearchItemSale();" placeholder="Từ ngày" />
+        @*<input type="text" id="fromDateItemSale" class="form-control relative-icon-calendar date" onchange="SearchItemSale();" placeholder="Từ ngày" />
+        <i class="fa fa-calendar absolute-icon-calendar"></i>*@
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <input type="date" data-date-format="dd/MM/yyyy" id="toDateItemSale" class="form-control" onchange="SearchItemSale();" placeholder="Đến ngày" />
+        @*<input type="text" id="toDateItemSale" class="form-control relative-icon-calendar date" onchange="SearchItemSale();" placeholder="Đến ngày" />
+        <i class="fa fa-calendar absolute-icon-calendar"></i>*@
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-2" style="text-align: right">
+        <button class="btn btn-primary" onclick="resetInputItemSale();"><i class="fa fa-plus"></i>Thêm sản phẩm khuyến mại</button>
+    </div>
+</div>
+
+@*<div class="row mb-4">
+    <div class="col-md-8 col-sm-8 col-12 mt-2" style="text-align: right">
+        <button class="btn btn-primary" onclick="resetInputItem();"><i class="fa fa-plus"></i>Thêm sản phẩm</button>
+    </div>
+</div>*@
+
+
+<div class="row">
+    <div class="col-md-12" id="tableItemSale">
+        @{Html.RenderAction("SearchItemSaleWeb", "ItemSale", new { Page = 1, fromDateCreate = "", toDateCreate = "", itemSaleName = "", category=""}); }
+    </div>
+</div>
+
+<div id="UpdateItemSale">
+
+</div>
+<script type="text/javascript">
+    $("#addImg").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            $("#DivtagImg ").remove();
+            $("#divAddImg").append('<div id="DivtagImg" style ="box-sizing:border-box;display:inline-block;margin-top:10px;"><img width="180" height="120" src="' + fileUrl + '" /></div>');
+            $("#txt-url-img").val(fileUrl);
+        }
+        fider.popup();
+    });
+</script>

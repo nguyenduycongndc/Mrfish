@@ -1,0 +1,226 @@
+﻿@using Data.DB
+@using Data.Model.APIWeb
+@using PagedList.Mvc
+@using PagedList
+@model IPagedList<ListCustomerOutputModel>
+@using Data.Utils
+
+
+<table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+    <thead class="text-center text-white bg-thead">
+        <tr>
+            <th>STT</th>
+            <th>
+                Họ tên
+            </th>
+            <th class="wrap">Số điện thoại</th>
+
+            <th class="wrap">Email</th>
+            <th class="wrap">Hạng khách hàng</th>
+            <th class="wrap">Trạng thái</th>
+            @*<th>Tỉnh/Thành phố</th>*@
+            <th class="widthCreatedDate">Ngày tạo</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody class="">
+        @{
+            if (Model.Count <= 0)
+            {
+                <tr class="text-center">
+                    <td colspan="10">Không có dữ liệu.</td>
+                </tr>
+            }
+            else
+            {
+                int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                foreach (var cus in Model)
+                {
+    <tr>
+        <td style="vertical-align: inherit;">@stt</td>
+        <td style="vertical-align: inherit;">@cus.CustomerName</td>
+        
+        <td style="vertical-align: inherit;" class="wrap" id="colPhone">@cus.PhoneNumber</td>
+        <td style="vertical-align: inherit;" class="wrap" id="colEmail">@cus.Email</td>
+        <td style="vertical-align: inherit;">
+            @{
+                switch (cus.RankID)
+                {
+                    case SystemParam.RANK_MEMBERSHIP: <p style="margin-bottom: 0">Thành viên</p> break;
+                    case SystemParam.RANK_SILVER: <p style="margin-bottom: 0">Bạc</p> break;
+                    case SystemParam.RANK_GOLDEN: <p style="margin-bottom: 0">Vàng</p> break;
+                    case SystemParam.RANK_DIAMOND: <p style="margin-bottom: 0">Kim cương</p> break;
+                }
+            }
+        </td>
+        <td style="vertical-align: inherit;">
+            @{
+                switch (cus.Status)
+                {
+                    case SystemParam.STATUS_NO_ACTIVE: <p style="margin-bottom: 0">Ngưng hoạt động</p> break;
+                    case SystemParam.STATUS_ACTIVE: <p style="margin-bottom: 0">Hoạt động</p> break;
+                }
+            }
+        </td>
+        @*<td style="vertical-align: inherit;">@cus.ProvinceName</td>*@
+        @*<td style="vertical-align: inherit;">
+            @cus.Address
+        </td>*@
+        <td style="vertical-align: inherit;">@cus.CreateDate.Value.ToString("dd/MM/yyyy")</td>
+
+        <td class="width2btn text-center" style="width:140px;">
+            @*<a href="javascript:void(0);" data-placement="top" title="Reset mật khẩu" class="cursor-pointer text-sm-center" style="font-size:16px;" onclick="RefreshCus(@cus.CustomerID)">
+                <i class="btnPoint fa fa-refresh"></i>
+            </a>*@
+            <a data-placement="top" href="@Url.Action("CustomerDetailNew", "Customer", new { ID = cus.CustomerID})" data-toggle="tooltip" title="Chi tiết khách hàng." class="cursor-pointer">
+                <i class="btnEdit fa fa-fw fa-edit"></i>
+            </a>
+            @*<a href="javascript:void(0);" data-placement="top" data-toggle="tooltip" data-placement="top" title="Xóa khách hàng." class="cursor-pointer" onclick="DeleteCus(@cus.CustomerID)">
+                <i class="btnDelete fa fa-fw fa-trash-o"></i>
+            </a>*@
+        </td>
+        <td class="collapse"><input class="icheck" data-phone="@cus.PhoneNumber" data-id="@cus.CustomerID" id="txtchecked" type="checkbox" onclick="showAddPointWithChecked(this)" /></td>
+    </tr>
+                    stt++;
+                }
+            }
+
+        }
+    </tbody>
+</table>
+
+
+<div class="col-md-12">
+    <div class="row float-right">
+        @*phân trang*@
+        @Html.PagedListPager(
+        Model,
+        page => Url.Action("Search", "Customer", new { Page = page, FromDate = ViewBag.FromDateCus, ToDate = ViewBag.ToDateCus, City = ViewBag.City, Status = ViewBag.Status, Phone = ViewBag.PhoneSearch, Rank = ViewBag.Rank }),
+        PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "ListCustomer" })
+        )
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var strListPhone = "";
+        var strListID = "";
+        $("#checkAll").on('click', function () {
+            if ($(this).is(':checked', true)) {
+                $(".icheck").prop("checked", true);
+            }
+            else {
+                $(".icheck").prop("checked", false);
+            }
+        });
+
+        $("#btnAddPoint").on('click', function (e) {
+            var listPhone = [];
+            var listID = [];
+            $(".icheck:checked").each(function (e) {
+                if ($(this).attr('data-phone') != '') {
+                    listPhone.push($(this).attr('data-phone'));
+                }
+                else {
+                    listID.push($(this).attr('data-id'));
+                }
+            });
+            strListPhone = listPhone.join(',');
+            strListID = listID.join(',');
+            $("#mdAddPoint #txtPhoneNumber").val(strListPhone);
+        });
+
+        $("#mdAddPoint #btnSaveAdd").unbind('click');
+
+        $("#mdAddPoint #btnSaveAdd").on('click', function (e) {
+            var listPhone = $("#mdAddPoint #txtPhoneNumber").val();
+            if (strListID.length <= 0 && listPhone == '') {
+                swal({
+                    title: "Thông báo",
+                    text: "Bạn phải nhập số điện thoại khách hàng",
+                    icon: "warning"
+                });
+                //$("#mdAddPoint").modal('hide');
+                return;
+            }
+            if (!isNumeric(listPhone) && listPhone != '') {
+                swal({
+                    title: "Thông báo",
+                    text: "Các số điện thoại phải được ngăn cách chỉ bằng dấu " + "','",
+                    icon: "warning"
+                })
+                return;
+            }
+            $("#frmAddPoint").validate({
+                rules: {
+                    pointNum: {
+                        required: true,
+                        minlength: 1
+                    }
+                },
+                messages: {
+                    pointNum: {
+                        required: "Vui lòng không để trống",
+                        minlength: "điểm phải > 0"
+                    }
+                },
+                submitHandler: function () {
+                    var data = strListID.toString();
+                    $('#mdAddPoint').modal("hide");
+                    $('#modalLoad').modal("show");
+                    $.ajax({
+                        url: "/Customer/addPointAll",
+                        data: {
+                            listID: data,
+                            listCusPhone: listPhone,
+                            Point: $('#mdAddPoint #txtPoint').val().trim().replace(/,/g, ""),
+                            Note: $('#mdAddPoint #txtNote').val().trim()
+                        },
+                        cache: true,
+                        success: function (result) {
+                            //if (Point.length == 0) {
+                            //    swal({
+                            //        title: "Vui lòng nhập số điểm muốn thêm!",
+                            //        text: "",
+                            //        icon:"warning"
+                            //    })
+                            //    return;
+                            //}
+                            if (result == 1) {
+                                swal({
+                                    title: "Thêm Điểm Thành Công",
+                                    text: "",
+                                    icon: "success"
+                                });
+                                $('#modalLoad').modal("hide");
+                                searchCustomer();
+                                window.location = "/Customer/Index";
+                            }
+                            else if (result == 3) {
+                                $('#modalLoad').modal("hide");
+                                swal({
+                                    title: "Không thành công",
+                                    text: "Vui lòng kiểm tra lại số điện thoại.",
+                                    icon: "warning"
+                                });
+                                searchCustomer();
+                                return;
+                            }
+                            else {
+                                $('#modalLoad').modal("hide");
+                                swal({
+                                    title: "Thông Báo",
+                                    text: "Có lỗi.",
+                                    icon: "warning"
+                                });
+                                searchCustomer();
+
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+</script>

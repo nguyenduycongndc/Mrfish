@@ -1,0 +1,53 @@
+﻿@using Data.DB
+@using Data.Model.APIWeb
+@using Data.Utils;
+@model ListContactInfoNewModel
+
+<div class="col-md-12">
+    <table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+        <thead class="text-center text-white bg-thead">
+            <tr>
+                <th class="width-stt">STT</th>
+                <th>Kênh liên hệ</th>
+                <th>Thông tin liên hệ</th>
+                @*<th>Mô tả</th>*@
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            <tr>
+                <td>1</td>
+                <td>Zalo</td>
+                <td>@Model.TextContactInfoZalo</td>
+                @*<td>@Model.TextDescriptionContactInfoZalo</td>*@
+                <td class="width2btn">
+                    <a data-toggle="tooltip" data-placement="top" title="Sửa thông tin" class="cursor-pointer" onclick="LoadContactInfo(@SystemParam.ID_ZALO)">
+                        <i class="btnEdit fa fa-fw fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Messager</td>
+                <td>@Model.TextContactInfoMess</td>
+                @*<td>@Model.TextDescriptionContactInfoMess</td>*@
+                <td class="width2btn">
+                    <a data-toggle="tooltip" data-placement="top" title="Sửa thông tin" class="cursor-pointer" onclick="LoadContactInfo(@SystemParam.ID_MESS)">
+                        <i class="btnEdit fa fa-fw fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Hotline</td>
+                <td>@Model.TextContactInfoHotline</td>
+                @*<td>@Model.TextDescriptionContactInfoHotline</td>*@
+                <td class="width2btn">
+                    <a data-toggle="tooltip" data-placement="top" title="Sửa thông tin" class="cursor-pointer" onclick="LoadContactInfo(@SystemParam.ID_HOTLINE)">
+                        <i class="btnEdit fa fa-fw fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

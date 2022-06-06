@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Data.DB
+@using Data.Utils
+@using Data.Model.APIWeb
+@model DetailConfigModel
+<div class="col-md-12 mt-5">
+    <div class="breadcrumb-holder">
+        <div class="row mb-3 mt-3">
+            <div class="col-md-10 col-sm-10 col-9 text-dark px-0 mt-3">
+                <h4><i class="fa fa-cogs"></i> Thiết lập</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row col-md-12 col-sm-12 col-12">
+    @*<div class="row col-md-6 col-sm-6 col-6">*@
+    <div class="row col-md-12 col-sm-12 col-12">
+        <div class="col-md-9  col-sm-9 col-12 mt-2 mb-1">
+            <h5><u>Thông tin nhận hàng khi mua</u></h5>
+        </div>
+    </div>
+    <div class="row col-md-12 col-sm-12 col-12">
+        @*<div class="col-md-12 col-sm-12 col-12">
+            <div class="col-md-12 col-sm-12 col-12">*@
+        <div class="row col-md-6 col-sm-6 col-12">
+            <div class="col-md-4 col-sm-4 col-12 mt-4">
+                <label>Điểm nhận được theo giá trị đợi hàng(Tính theo % giá trị đơn hàng)</label>
+            </div>
+            <div class="col-md-7 col-sm-7 col-11 mt-3">
+                <input onkeypress='validateIndex(event)' type="text" class="form-control" id="valuePoint" value="@Model.ValuePercentage.ToString("0.##")" name="title" placeholder="Giá trị đơn hàng">
+            </div>
+            <div class="col-md-1 col-sm-1 col-1 mt-4">
+                %
+            </div>
+        </div>
+        @*<div class="row col-md-6 col-sm-6 col-12">
+                <div class="col-md-2 col-sm-2 col-12 mt-4">
+                    <label>Mô tả</label>
+                </div>
+                <div class="col-md-10 col-sm-10 col-12 mt-3">
+                    <textarea type="text" class="form-control" id="descriptionPoint" name="title" placeholder="Mô tả">@Model.TextPercentage</textarea>
+                </div>
+            </div>*@
+        @*</div>
+            </div>*@
+    </div>
+    <div class="row col-lg-12 col-md-12 col-sm-12 col-12 mt-3">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 mt-3" style="text-align: right">
+            <button type="button" class="btn btn-primary px-3" onclick="SaveEditConfig();">Lưu</button>
+        </div>
+    </div>
+</div>
+<div class="row col-md-12 col-sm-12 col-12">
+    <div class="col-md-9  col-sm-9 col-12 mt-2 mb-1">
+        <h5><u>Thông tin hạng</u></h5>
+    </div>
+    @*<div class="row ">*@
+    <div class="col-md-12 col-sm-12 mt-2" id="list">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#listRank" onclick="">Danh sách hạng</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#contactInfo">Liên hệ</a>
+            </li>
+        </ul>
+        <div class="tab-content" style="overflow: scroll;">
+            <div id="listRank" class="tab-pane fade show active">
+                <div class="row" id="ListRankNew">
+                    @{
+                        Html.RenderAction("listRank", "Config", new { Page = 1 });
+                    }
+                </div>
+            </div>
+            <div id="contactInfo" class="tab-pane fade">
+                <div class="row" id="ListContactInfoTable">
+                    @{
+                        Html.RenderAction("listContactInfoTable", "Config", new { });
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="_listRank">
+
+    </div>
+    @*</div>*@
+</div>
+<script type="text/javascript">
+
+    function validateIndex(evt) {
+        debugger;
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        //var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+</script>
+
+

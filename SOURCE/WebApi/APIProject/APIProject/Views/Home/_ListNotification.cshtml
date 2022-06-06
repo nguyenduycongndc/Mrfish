@@ -1,0 +1,56 @@
+﻿@model List<Data.Model.APIApp.NotificationModel>
+@{
+    ViewBag.Title = "_ListNotification";
+}
+
+
+<div class="notification float-right">
+    <div class="dropdown">
+        <a href="javascript:void(0);" class="dropdown-toggle user-name" data-toggle="dropdown">
+            <i class="fa fa-bell"></i><small><span class="sec counter counter-lg text-white badge badge-pill m-0 p-1" style="background-color:darkorange; color: rgb(231,211,90);position: absolute;bottom: 15px;left: 10px;" id="all-new-noti">@ViewBag.countNoti</span></small>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right account">
+            <div style="display:flex;align-items:center;margin-bottom:16px;justify-content: space-between;" href="">
+                <div style="display: inline-block">
+                    <div style="font-size: 16px; font-weight: bold;">Thông báo</div>
+                    <div style="background-color: red; height: 3px;"></div>
+                </div>
+                <div style="font-size: 13px; color: orange;">Chưa đọc <span id="count-noti">@ViewBag.countNoti</span>  thông báo mới</div>
+            </div>
+            <ul class="list-notification">
+                @foreach (var item in Model)
+                {
+                    if (item.IsRead == 1)
+                    {
+                        <li>
+                            <a class="noti-item" style="border-bottom: 1px solid rgb(238, 238, 238); padding: 10px 6px; display:flex; justify-content: flex-start;"
+                               href="@Url.Action("ReadNotification", "Home",new { ID = item.ID,type = item.Type,orderID = item.OrderID , customerID = item.CustomerID})">
+                                <i class="fa fa-bell " style="font-size: 24px; color: gray !important; margin-right:16px ; margin-left:16px"></i>
+                                <div style="font-size: 13px; color: gray;">
+                                    <div>@item.Title</div>
+                                    <div>@item.CreateDate.ToString("HH:mm dd/MM/yyyy")</div>
+                                </div>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a class="noti-item" style="background-color: rgb(238, 238, 238); border-bottom: 1px solid rgb(238, 238, 238); padding: 10px 6px; display:flex; justify-content: flex-start;"
+                               href="@Url.Action("ReadNotification", "Home",new { ID = item.ID,type = item.Type,orderID = item.OrderID , customerID = item.CustomerID})">
+                                <i class="fa fa-bell " style="font-size: 24px; color: gray !important; margin-right:16px ; margin-left:16px"></i>
+                                <div style="font-size: 13px; color: gray;">
+                                    <div>@item.Title</div>
+                                    <div>@item.CreateDate.ToString("HH:mm dd/MM/yyyy")</div>
+                                </div>
+                            </a>
+                        </li>
+                    }
+
+                }
+
+            </ul>
+        </div>
+
+    </div>
+</div>

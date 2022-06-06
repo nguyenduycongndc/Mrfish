@@ -1,0 +1,107 @@
+﻿@using Data.DB
+@using Data.Model.APIWeb
+@using PagedList.Mvc
+@using PagedList
+@using Data.Utils
+@model IPagedList<ListOrderNewModel>
+
+<div class="col-md-12">
+    <table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+        <thead class="text-center text-white bg-thead">
+            <tr>
+                <th class="width-stt">STT</th>
+                <th>Mã đơn hàng</th>
+                <th>Tên người nhận</th>
+                <th>Phương thức thanh toán</th>
+                <th>Tổng tiền thanh toán</th>
+                <th>Trạng thái đơn hàng</th>
+                <th>Ghi chú</th>
+                <th>Ngày tạo</th>
+                <th>Chi tiết</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @{
+                if (Model.Count() <= 0)
+                {
+                    <tr>
+                        <td colspan="10">Không có dữ liệu.</td>
+                    </tr>
+                }
+                else
+                {
+                    int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                    foreach (var data in Model)
+                    {
+        <tr>
+            <td>@stt</td>
+            <td>@data.Code</td>
+            <td>@data.CustomerName</td>
+            @*<td>@data.PaymentType</td>*@
+            @{
+                switch (data.PaymentType)
+                {
+                    case SystemParam.PAYMENT_TYPE_ON_DELIVERY:
+                        <td class="text-center">Tiền mặt</td>
+                        break;
+                    case SystemParam.PAYMENT_TYPE_MOMO:
+                        <td class="text-center">Chuyển khoản, MOMO</td>
+                        break;
+                    case SystemParam.PAYMENT_TYPE_VNPAY:
+                        <td class="text-center">Thanh toán VNPAY</td>
+                        break;
+                    default:
+                        break;
+                }
+            }
+            <td>@String.Format("{0:n0}", data.TotalPrice) VND</td>
+            @*<td>@data.Status</td>*@
+            @{
+                switch (data.Status)
+                {
+                    case SystemParam.AGAIN_STATUS_ORDER:
+                        <td class="text-center">Hoàn tiền</td>
+                        break;
+                    case SystemParam.CANCEL_STATUS_ORDER:
+                        <td class="text-center">Hủy</td>
+                        break;
+                    case SystemParam.AWAIT_STATUS_ORDER:
+                        <td class="text-center">Chờ xác nhận</td>
+                        break;
+                    case SystemParam.PROCESSING_STATUS_ORDER:
+                        <td class="text-center">Đang thực hiện</td>
+                        break;
+                    case SystemParam.COMPLETED_STATUS_ORDER:
+                        <td class="text-center">Hoàn thành</td>
+                        break;
+                    default:
+                        break;
+                }
+            }
+            <td>@data.Note</td>
+            <td>@data.CreateDate.ToString("dd/MM/yyyy hh:mm")</td>
+            <td>
+                <a data-placement="top" title="Chi tiết đơn hàng." class="cursor-pointer" href="@Url.Action("ShowEditOrderNew", "Order", new { ID = data.ID         })">
+                    <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                </a>
+            </td>
+        </tr>
+                        stt++;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<div class="col-md-12">
+    <div class="row float-right mr-1">
+        @*phân trang*@
+        @Html.PagedListPager(
+            Model,
+            page => Url.Action("searchOrderNew", "Customer", new { Page = page, cusID = ViewBag.cusID }),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "ListOrderNew" })
+            )
+    </div>
+</div>

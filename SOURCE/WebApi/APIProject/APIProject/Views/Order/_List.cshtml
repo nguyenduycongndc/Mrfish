@@ -1,0 +1,136 @@
+﻿@using Data.DB
+@using Data.Model.APIWeb
+@using PagedList.Mvc
+@using Data.Utils
+@model  PagedList.IPagedList<ListOrderWebModel>
+
+
+<table class="table table-light table-hover table-bordered table-responsive-md table-responsive-sm" id="">
+    <thead class="bg-thead text-center text-white">
+        <tr>
+            <th>STT</th>
+            <th>Mã đơn</th>
+            <th>Tên KH - SĐT</th>
+            <th>Người nhận - SĐT</th>
+            @*<th>Số điện thoại</th>*@
+            <th>Địa chỉ nhận hàng</th>
+            <th>Tổng tiền</th>
+            <th class="widthCreatedDate">Ngày tạo</th>
+            <th>Hình thức thanh toán</th>
+            <th>Trạng thái</th>
+            @{
+                if (ViewBag.Role == SystemParam.ROLE_ADMIN || ViewBag.Role == SystemParam.ROLE_USER_ORDER)
+                {
+                    <th></th>
+                }
+            }
+        </tr>
+    </thead>
+    <tbody class="text-center" id="">
+        @{
+            if (Model.Count() <= 0)
+            {
+                <tr>
+                    <td colspan="11">Không có dữ liệu.</td>
+                </tr>
+            }
+            else
+            {
+
+                int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                foreach (var dt in Model)
+                {
+                    <tr>
+                        <td>@stt</td>
+                        <td>@dt.Code</td>
+                        <td>@dt.CusName - @dt.CusPhone</td>
+                        <td>@dt.BuyerName - @dt.BuyerPhone</td>
+                        @{
+
+                            @*<td>@dt.BuyerPhone</td>*@
+                            @*if (@dt.Customer.AgentCode != null && @dt.Customer.AgentCode != "")
+                                {
+                                    <td>Số lượng</td>
+                                }
+                                else
+                                {
+                                    <td>Khách hàng</td>
+                                }*@
+                            <td>@dt.BuyerAddress.Trim(), @dt.WardName, @dt.DistrictName, @dt.ProvinceName</td>
+                            <td>@String.Format("{0:0,0 VNĐ}", @dt.TotalPrice)</td>
+                            <td>@dt.CreateDate.ToString("dd/MM/yyyy")</td>
+                            switch (dt.PaymentType)
+                            {
+                                case SystemParam.PAYMENT_TYPE_ON_DELIVERY:
+                                    <td class="text-center">Tiền mặt</td>
+                                    break;
+                                case SystemParam.PAYMENT_TYPE_MOMO:
+                                    <td class="text-center">Chuyển khoản, MOMO</td>
+                                    break;
+                                case SystemParam.PAYMENT_TYPE_VNPAY:
+                                    <td class="text-center">Thanh toán VNPAY</td>
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if (@dt.Status == SystemParam.AWAIT_STATUS_ORDER)
+                            {
+                                <td class="text-warning">Chờ xác nhận</td>
+                            }
+                            else if (@dt.Status == SystemParam.PROCESSING_STATUS_ORDER)
+                            {
+                                <td class="text-primary">Đang thực hiện</td>
+                            }
+                            else if (@dt.Status == SystemParam.COMPLETED_STATUS_ORDER)
+                            {
+                                <td class="text-success">Hoàn thành</td>
+                            }
+                            else if (@dt.Status == SystemParam.CANCEL_STATUS_ORDER)
+                            {
+                                <td class="text-danger">Hủy</td>
+                            }
+                            else if (@dt.Status == SystemParam.AGAIN_STATUS_ORDER)
+                            {
+                                <td class="" style="color:purple">Hoàn tiền</td>
+                            }
+                        }
+                        @{
+                            if (ViewBag.Role == SystemParam.ROLE_ADMIN || ViewBag.Role == SystemParam.ROLE_USER_ORDER)
+                            {
+                                <td class="width2btn" id="tdUserOrder">
+                                    <!--<a data-toggle="modal" data-target="" data-placement="top" title="Chi tiết đơn hàng." class="cursor-pointer" onclick="showEditOrder(@dt.ID);">-->
+                                    <a data-placement="top" title="Chi tiết đơn hàng." class="cursor-pointer" href="@Url.Action("ShowEditOrderNew", "Order", new { ID = dt.ID})">
+                                        <i class="btnEdit fa fa-fw fa-edit"></i>
+                                        @*<i class="btnEdit fa fa-fw fa-edit"></i>*@
+                                    </a>
+                                    <a data-toggle="" data-placement="top" title="Xuất Excel." class="cursor-pointer" data-target="" onclick="exportOneOrderExcel(@dt.ID)">
+                                        <i class="fa fa-download" style="font-size: 20px; color:#ede10d"></i>
+                                    </a>
+                                </td>
+                            }
+                        }
+
+                    </tr>
+                    stt++;
+                }
+            }
+        }
+
+    </tbody>
+</table>
+
+<div class="col-md-12">
+    <div class="row float-right">
+        @Html.PagedListPager(Model, Page => Url.Action("Search", "Order", new { Page = Page, Status = ViewBag.Status, FromDate = ViewBag.fromDate, ToDate = ViewBag.toDate, Phone = ViewBag.Phone, PaymentType = ViewBag.PaymentType }),
+        PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+        {
+            HttpMethod = "GET",
+            UpdateTargetId = "list"
+        })
+        )
+    </div>
+</div>
+
+<div id="fillModal"></div>
+
+

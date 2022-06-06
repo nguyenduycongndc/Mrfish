@@ -1,0 +1,311 @@
+﻿@using Data.Utils;
+@using Data.Model.APIWeb;
+@model CreateItemInputModel
+<div class="modal fade" id="EditItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg mw-100 w-75" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-fw fa-shopping-cart"></i>Sửa sản phẩm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="form_update_item" name="form_update_item">
+                    <div class=" row col-12">
+                        <!--Left content-->
+                        <div class="col-md-6">
+                            <div class="row ">
+                                <div class="col-md-4 col-4 mt-2">
+                                    <p class="color-require"><label class="text-dark">Danh mục</label> *</p>
+                                </div>
+                                <div class="col-md-8 col-8 mt-2">
+                                    <select class="form-control" id="cbbCategoryUpdate" name="CategoryID" value="@Model.CategoryID">
+                                        @{
+                                            foreach (var p in ViewBag.listCategoryEdit)
+                                            {
+                                                <option value="@p.CategoryID" @(Model.CategoryID == @p.CategoryID ? Html.Raw("selected") : Html.Raw(""))>@p.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-4 mt-2">
+                                    <p class="color-require"><label class="text-dark">Mã sản phẩm</label> *</p>
+                                </div>
+                                <div class="col-md-8 col-8 mt-2">
+                                    <input type="text" readonly class="form-control" id="CodeEdit" name="Code" placeholder="Nhập mã sản phẩm..." value="@Model.Code">
+                                    <input type="hidden" name="ID" id="ID" value="@Model.ID" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-4 mt-2">
+                                    <p class="mb-0 color-require"><label class="text-dark">Tên sản phẩm</label> *</p>
+                                </div>
+                                <div class="col-md-8 col-8 mt-2">
+                                    <input type="text" class="form-control" id="NameEdit" name="Name" placeholder="Nhập tên sản phẩm..." value="@Model.Name" />
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-4 col-4 mt-2">
+                                    <p class="mb-0 color-require"><label class="text-dark">Trạng thái</label> *</p>
+                                </div>
+                                <div class="col-md-8 col-8 mt-2">
+                                    <select id="StatusCreate" name="Status" class="form-control">
+                                        <option value="@SystemParam.ACTIVE_FALSE" @(Model.Status.Equals(SystemParam.ACTIVE_FALSE) ? Html.Raw("selected") : Html.Raw(""))>Ngừng hoạt động</option>
+                                        <option value="@SystemParam.ACTIVE" @(Model.Status.Equals(SystemParam.ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Đang hoạt động</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-4 mt-2">
+                                    <p class="mb-0 color-require"><label class="text-dark">Sản phẩm bán chạy</label> *</p>
+                                </div>
+                                <div class="col-md-8 col-8 mt-2">
+                                    <select class="form-control" id="slIsHotEdit">
+                                        <option value="@SystemParam.UN_ISHOT_ACTIVE" @(Model.IsHot.Equals(SystemParam.UN_ISHOT_ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Không</option>
+                                        <option value="@SystemParam.ISHOT_ACTIVE"@(Model.IsHot.Equals(SystemParam.ISHOT_ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Có</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-4 mt-2">
+                                    <p class="mb-0 color-require"><label class="text-dark">Giá tiền</label> *</p>
+                                </div>
+                                <div class="col-md-8 col-8 mt-2">
+                                    <input type="text" class="form-control number" id="PriceEdit" name="Price" placeholder="Nhập giá tiền..." value="@String.Format("{0:n0}", Convert.ToInt32(Model.Price))" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-12 mt-2">
+                                    <p class=" color-require"><label class="text-dark">Mô tả</label></p>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-12 mt-2">
+                                    <textarea class="form-control mt-3" placeholder="Thêm mô tả..." id="NoteEdit" name="Note"> @Model.Note</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row ">
+                                <div class="col-md-12">
+                                    <p class="mb-0 color-require"><label class="text-dark">Ảnh sản phẩm</label>*</p>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12 mb-md-2 mb-sm-2">
+                                <a href="" class="text-bold mb-3" style="width:100%;height:100%; color: #5A5A5A;" id="_addImg">
+                                    <img id="Imgtag" src="https://cdn4.iconfinder.com/data/icons/social-communication/142/add_photo-512.png" class="col-ml-2 col-md-2 px-0" alt="Chọn" />
+                                </a>
+                            </div>
+                            <div class="article row mt-2" id="_divAddImg">
+                                @{
+                                    int I = 0;
+                                    var lstImgUrl = Model.ImageUrl != null && Model.ImageUrl.Length > 0 && Model.ImageUrl.Contains(',') ? Model.ImageUrl.Split(',').ToList() : new List<string> { Model.ImageUrl };
+                                    foreach (var imgUrl in lstImgUrl)
+                                    {
+
+                                        <div class="col-md-6 Imgs " id="img-@I" style="box-sizing:border-box;display:inline-block;margin-top:10px;"><img class="_lstImage" src="@imgUrl" onclick="ChangeImage($(this));" style="height:auto; width: 100%; margin-right:-15px;" /><i title="Xóa" onclick="DeleteImage(event);" src="@imgUrl" class="fa fa-2x fa-remove icon-remove display-none" data="img-@I" style="position:absolute;color: #ff0000;"></i></div>
+                                        I++;
+                                    }
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class=" row col-12 mt-3">
+                        <div class="col-md-6 ">
+                            <p class="mb-0 color-require ml-3"><label class="text-dark">Ghi chú</label> *</p>
+                            <textarea class="form-control mt-3" placeholder="Thêm mô tả..." id="NoteEdit" name="Note"> @Model.Note</textarea>
+                        </div>
+                        <div class="col-md-6 ">
+                            <p class="mb-0 color-require ml-3"><label class="text-dark">Chi tiết sản phẩm</label> *</p>
+                            <textarea class="form-control mt-3" placeholder="Thêm chi tiết sản phẩm..." id="technicalEdit" name="Note"> @Model.Technical</textarea>
+                        </div>
+                    </div>*@
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary px-3" onclick="SaveEditItem();">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.number').keyup(function () {
+            $val = cms_decode_currency_format($(this).val());
+            $(this).val(cms_encode_currency_format($val));
+        });
+
+        $('#form_update_item #cmbCategoryUpdate').val(@Model.CategoryID);
+
+    });
+
+    function cms_encode_currency_format(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    }
+
+    function cms_decode_currency_format(obs) {
+        if (obs == '')
+            return 0;
+        else
+            return parseInt(obs.replace(/,/g, ''));
+    }
+</script>
+<script>
+
+    $(document).ready(function () {
+
+        //CKEDITOR.replace('technicalEdit', {
+        //    height: 300,
+        //    disableObjectResizing: true
+        //});
+        CKEDITOR.replace('NoteEdit', {
+            height: 300,
+            disableObjectResizing: true
+        });
+
+        CKEDITOR.on('dialogDefinition', function (ev) {
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+            //var editorO = ev.data.definition.dialog.getParentEditor();
+
+            if (dialogName == 'image' || dialogName == 'image2') {
+                var infoTab = dialogDefinition.getContents('info');
+
+                if (dialogName == 'image') {
+                    infoTab.remove('txtHeight');
+                    infoTab.remove('txtWidth');
+                    infoTab.remove('ratioLock');
+                }
+                else {
+                    infoTab.remove('height');
+                    infoTab.remove('width');
+                    infoTab.remove('lock');
+                }
+            }
+        });
+
+    });
+
+
+</script>
+@*fix ânhr*@
+
+<script>
+
+    $(document).ready(function () {
+        $(".Imgs").mouseover(function () {
+            $(this).find(".icon-remove").removeClass("display-none");
+        });
+        $(".Imgs").mouseout(function () {
+            $(this).find(".icon-remove").addClass("display-none");
+        });
+
+        CKEDITOR.on('dialogDefinition', function (ev) {
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+            //var editorO = ev.data.definition.dialog.getParentEditor();
+
+            if (dialogName == 'image' || dialogName == 'image2') {
+                var infoTab = dialogDefinition.getContents('info');
+
+                if (dialogName == 'image') {
+                    infoTab.remove('txtHeight');
+                    infoTab.remove('txtWidth');
+                    infoTab.remove('ratioLock');
+                }
+                else {
+                    infoTab.remove('height');
+                    infoTab.remove('width');
+                    infoTab.remove('lock');
+                }
+            }
+        });
+
+    });
+
+
+
+    $("#add_logo_place").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            $("#AddImgLogoPlace ").remove();
+            $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+            var url = window.location.origin + fileUrl;
+            $('#txtAddLogoPlace').val(url);
+        }
+        fider.popup();
+    });
+</script>
+
+<script type="text/javascript">
+    $('#myModal').on('show.bs.modal', function (e) {
+        $("#txtNameDetail").val("");
+        $("#txtDescriptions").val("");
+        $("#typeDetail").val($("#typeDetail option:first").val());
+    })
+
+    var count = 0;
+    $("#_addImg").off('click').on('click', function (e) {
+        e.preventDefault();
+        count++;
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            $("#_divAddImg").append('<div class="Imgs col-md-6" id="img' + count + '" style ="box-sizing:border-box;display:inline-block;margin-top:10px;"><img class="_lstImage" src="' + fileUrl + '" onclick="ChangeImage($(this));" style="height:auto; width: 100%; max-height:600px; margin-right:-15px;"/><i  title ="Xóa" onclick="DeleteImage(event);" src="' + fileUrl + '" class="fa fa-2x fa-remove icon-remove display-none " data="img' + count + '" style="position:absolute;color: #ff0000;"></i></div>');
+            var listUrl = $("#_txturlImage").val();
+            if (listUrl == "") {
+                listUrl = fileUrl;
+                $("#_txturlImage").val(listUrl);
+            }
+            else {
+                var url = listUrl + "," + fileUrl;
+                $("#_txturlImage").val(url);
+            }
+            $(".Imgs").mouseover(function () {
+                $(this).find(".icon-remove").removeClass("display-none");
+            });
+            $(".Imgs").mouseout(function () {
+                $(this).find(".icon-remove").addClass("display-none");
+            });
+        }
+        fider.popup();
+    });
+</script>
+
+<script type="text/javascript">
+    function ChangeImage($url) {
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            var url_old = $url.attr('src');
+            $url.attr('src', fileUrl);
+            if (fileUrl != url_old) {
+                var str = $('#_txturlImage').val();
+                $('#_txturlImage').val(str.replace(url_old, fileUrl));
+            }
+        }
+        fider.popup();
+    }
+</script>
+
+<script type="text/javascript">
+    //function DeleteImage(obj) {
+    //    var temp = obj.attr('data');
+    //    var url = obj.attr('src');
+    //    var str = $('#_txturlImage').val();
+    //    $('#_txturlImage').val(str.replace(url, ""));
+    //    $('#' + temp + '').remove();
+    //}
+    function DeleteImage(event) {
+        $(event.target).closest("div").remove();
+    }
+    $('#add-info').click(function () {
+        $('#txtNameDetail').val("");
+        $('#txtDescriptions').val("");
+    })
+</script>

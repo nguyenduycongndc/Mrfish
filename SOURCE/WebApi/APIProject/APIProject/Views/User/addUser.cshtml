@@ -1,0 +1,147 @@
+﻿
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+@using Data.Utils
+@using Data.Model.APIWeb;
+<style>
+    .dropdown-menu {
+        color: #737b84 !important;
+    }
+</style>
+<div class="col-md-12 mt-5">
+    <div class="breadcrumb-holder">
+        <div class="row mb-3 mt-3">
+            <div class="col-md-10 col-sm-10 col-9 text-dark px-0 mt-3">
+                <h4><i class="fa fa-user-secret"></i> Thêm người dùng </h4>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-12 bg-white radius-form box-shadow-form mb-5">
+    <!-- START col-md-8 panel form create -->
+    <div class="row pb-3">
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <label style=" margin-top: 9px;">Tên người dùng</label><a style="color:red">*</a>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                <input class="form-control" id="txtNameCreateUser" placeholder="Nhập tên người dùng" />
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <label style=" margin-top: 9px;">Số điện thoại</label><a style="color:red">*</a>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                <input class="form-control" id="txtPhoneCreateUser" placeholder="Nhập số điện thoại" maxlength="10" />
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <label style=" margin-top: 9px;">Ngày sinh</label><a style="color:red">*</a>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                <input class="form-control relative-icon-calendar date" id="txtDOB" placeholder="Ngày sinh" />
+                <i class="fa fa-calendar absolute-icon-calendar" style="top: 9px;"></i>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <label style=" margin-top: 9px;">Địa chỉ nhà</label>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                <input class="form-control" id="txtAddress" placeholder="Địa chỉ nhà" />
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <label style=" margin-top: 9px;">Giới tính</label>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                <select class="form-control" id="slSex">
+                    <option value="@SystemParam.MEN">Nam</option>
+                    <option value="@SystemParam.WOMEN">Nữ</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <label style=" margin-top: 9px;">Email</label>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                <input type="email" class="form-control" id="mail" />
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <label style=" margin-top: 9px;">Mật khẩu</label><a style="color:red">*</a>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                <input type="password" class="form-control" id="txtPasswordCreateUser" placeholder="Nhập mật khẩu" />
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <label style=" margin-top: 9px;">Nhập lại mật khẩu</label><a style="color:red">*</a>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                <input type="password" class="form-control" id="txtconfirmPasswordCreateUser" placeholder="Nhập lại mật khẩu" />
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <label style=" margin-top: 9px;">Vai trò</label><a style="color:red">*</a>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                <select class="form-control" id="slRole">
+                    <option value="@SystemParam.ROLE_EDITOR">Biên tập</option>
+                    <option value="@SystemParam.ROLE_ACCOUNTANT">Kế toán</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <label style=" margin-top: 9px;">Ghi chú</label>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                <textarea class="form-control" id="txtNote" placeholder="Ghi chú"></textarea>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-12 mt-3 row" id="add_logo_place">
+            @*<a href="" class="text-bold mb-3" style="width:100%;height:100%; color: #5A5A5A;" id="add_logo_place">
+                <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label></p>
+                <div class="imgUser">
+                    <div class="article" id="AddLogoPlace">
+                        <img id="AddImgLogoPlace" src="/Uploads/files/add_img.png" class="col-md-12 px-0 contentImg" alt="your image" />
+                    </div>
+                </div>
+            </a>*@
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label></p>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3 article" id="AddLogoPlace">
+                <img id="AddImgLogoPlace" src="/Uploads/files/add_img.png" class="col-md-12 px-0 contentImg" alt="your image" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row pb-2 pt-2 text-right">
+        <div class="col-md-12 col-sm-12 col-12 txtBeauty">
+            <a class="btn btn-danger" href="/User/Index"><i class="fa fa-fw fa-arrow-left"></i> Trở về</a>
+            <button type="button" class="btn btn-primary px-3 ml-3" onclick="createUser()">Lưu</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#add_logo_place").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            $("#AddImgLogoPlace ").remove();
+            $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+            var url = window.location.origin + fileUrl;
+            $('#txtAddLogoPlace').val(url);
+        }
+        fider.popup();
+    });
+</script>

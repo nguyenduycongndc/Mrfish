@@ -1,0 +1,241 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Data.DB
+@using Data.Utils
+@using Data.Model.APIWeb
+@model VoucherIntroduceNewModel
+
+<div class="col-md-12 mt-5">
+    <div class="breadcrumb-holder">
+        <div class="row mb-3 mt-3">
+            <div class="col-md-10 col-sm-10 col-9 text-dark px-0 mt-3">
+                <h4><i class="fa fa-ticket ic-menu"></i> Sửa voucher giới thiệu </h4>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="form_create_item" name="form_create_item" class="">
+    <div class="row col-md-11 col-sm-11 col-12 bg-white radius-form box-shadow-form mb-5" style="margin:auto">
+        <!--Left content-->
+        <div class="col-lg-7 col-md-7">
+            @{
+                if (Model.QuantityReceived == 0)
+                {
+                    <div class="row ">
+                        <div class="col-md-4 col-4 mt-3">
+                            <label class="text-dark">Mã voucher</label>
+                        </div>
+                        <div class="col-md-8 col-8 mt-3">
+                            @*<input type="text" class="form-control" id="codeVouEdit" value="@Model.Code" name="title" placeholder="Mã voucher" disabled>*@
+                            <a>@Model.Code</a>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-4 col-4 mt-3">
+                            <label class="text-dark">Tên voucher</label>
+                        </div>
+                        <div class="col-md-8 col-8 mt-3">
+                            <input type="text" class="form-control" id="nameVouEdit" value="@Model.Name" name="title" placeholder="Tên voucher">
+                            @*<a>@Model.Name</a>*@
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-4 mt-3">
+                            <label class="text-dark">Loại voucher</label>
+                        </div>
+                        <div class="col-md-8 col-8 mt-3">
+                            <select class="form-control" id="typeDiscountVouEdit" onchange="changeTextEdit(this.value, 'textMoney');">
+                                <option value="@SystemParam.COUPON_DISCOUNT_MONEY" @(Model.TypeDiscount.Equals(SystemParam.COUPON_DISCOUNT_MONEY) ? Html.Raw("selected") : Html.Raw(""))>Theo tiền</option>
+                                <option value="@SystemParam.COUPON_DISCOUNT_PERCENT" @(Model.TypeDiscount.Equals(SystemParam.COUPON_DISCOUNT_PERCENT) ? Html.Raw("selected") : Html.Raw(""))>Theo %</option>
+                            </select>
+                            @*@{
+                                    switch (Model.TypeDiscount)
+                                    {
+                                        case SystemParam.COUPON_DISCOUNT_MONEY:
+                                            <a>Theo tiền</a>
+                                            break;
+                                        case SystemParam.COUPON_DISCOUNT_PERCENT:
+                                            <a>Theo %</a>
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }*@
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-4 col-4 mt-3">
+                            <p class="mb-0 color-require mt-2"><label class="text-dark">Mức giảm</label> *</p>
+                        </div>
+                        <div class="col-md-7 col-7 mt-3">
+                            <input type="text" class="form-control" id="discountVouEdit" value="@Model.Discount" name="title" placeholder="Mức voucher">
+                            @*@{
+                                    switch (Model.TypeDiscount)
+                                    {
+                                        case SystemParam.COUPON_DISCOUNT_MONEY:
+                                            <a>@Model.Discount VNĐ</a>
+                                            break;
+                                        case SystemParam.COUPON_DISCOUNT_PERCENT:
+                                            <a>@Model.Discount %</a>
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }*@
+                        </div>
+                        <a id="textMoney2"></a>
+                        <div class="col-md-1 col-1 mt-4" id="textMoney1">
+                            @{
+                                switch (Model.TypeDiscount)
+                                {
+                                    case SystemParam.COUPON_DISCOUNT_MONEY:
+                                        <a>VNĐ</a>
+                                        break;
+                                    case SystemParam.COUPON_DISCOUNT_PERCENT:
+                                        <a>%</a>
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row ">
+                        <div class="col-md-4 col-4 mt-3">
+                            <label class="text-dark">Mã voucher</label>
+                        </div>
+                        <div class="col-md-8 col-8 mt-3">
+                            @*<input type="text" class="form-control" id="codeVouEdit" value="@Model.Code" name="title" placeholder="Mã voucher" disabled>*@
+                            <a>@Model.Code</a>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-4 col-4 mt-3">
+                            <label class="text-dark">Tên voucher</label>
+                        </div>
+                        <div class="col-md-8 col-8 mt-3">
+                            <input type="text" class="form-control" id="nameVouEdit" value="@Model.Name" name="title" placeholder="Tên voucher" disabled>
+                            @*<a>@Model.Name</a>*@
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-4 mt-3">
+                            <label class="text-dark">Loại voucher</label>
+                        </div>
+                        <div class="col-md-8 col-8 mt-3">
+                            <select class="form-control" id="typeDiscountVouEdit" disabled>
+                                <option value="@SystemParam.COUPON_DISCOUNT_MONEY" @(Model.TypeDiscount.Equals(SystemParam.COUPON_DISCOUNT_MONEY) ? Html.Raw("selected") : Html.Raw(""))>Theo tiền</option>
+                                <option value="@SystemParam.COUPON_DISCOUNT_PERCENT" @(Model.TypeDiscount.Equals(SystemParam.COUPON_DISCOUNT_PERCENT) ? Html.Raw("selected") : Html.Raw(""))>Theo %</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-4 col-4 mt-3">
+                            <p class="mb-0 color-require mt-2"><label class="text-dark">Mức giảm</label> *</p>
+                        </div>
+                        <div class="col-md-7 col-7 mt-3">
+                            <input type="text" class="form-control" id="discountVouEdit" value="@String.Format("{0:n0}",Convert.ToInt32(Model.Discount))" name="title" placeholder="Mức voucher" disabled>
+                        </div>
+                        <div class="col-md-1 col-1 mt-4">
+                            @{
+                                switch (Model.TypeDiscount)
+                                {
+                                    case SystemParam.COUPON_DISCOUNT_MONEY:
+                                        <a>VNĐ</a>
+                                        break;
+                                    case SystemParam.COUPON_DISCOUNT_PERCENT:
+                                        <a>%</a>
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+
+
+            }
+
+            <div class="row ">
+                <div class="col-md-4 col-4 mt-3">
+                    <p class="mb-0 color-require mt-2"><label class="text-dark">Trạng thái</label> *</p>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    @{
+                        if (Model.Status.Equals(SystemParam.STATUS_ACTIVE))
+                        {
+                            <select class="form-control" id="slStatusVouEdit" disabled>
+                                <option value="@SystemParam.STATUS_NO_ACTIVE" @(Model.Status.Equals(SystemParam.STATUS_NO_ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Không kích hoạt</option>
+                                <option value="@SystemParam.STATUS_ACTIVE" @(Model.Status.Equals(SystemParam.STATUS_ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Kích hoạt</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <select class="form-control" id="slStatusVouEdit">
+                                <option value="@SystemParam.STATUS_NO_ACTIVE" @(Model.Status.Equals(SystemParam.STATUS_NO_ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Không kích hoạt</option>
+                                <option value="@SystemParam.STATUS_ACTIVE" @(Model.Status.Equals(SystemParam.STATUS_ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Kích hoạt</option>
+                            </select>
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 col-md-5 row" id="add_logo_place">
+            <div class="col-md-3 col-sm-4 col-12 mt-3">
+                <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label>*</p>
+            </div>
+            <div class="col-md-9 col-sm-8 col-12 mt-3 article" id="AddLogoPlace">
+                <img id="AddImgLogoPlace" src="@Model.ImageUrl" class="col-md-12 px-0 contentImg" alt="your image" />
+            </div>
+        </div>
+        <div class="row col-lg-12 col-md-12 col-12 mt-2">
+            <div class="col-md-12 col-sm-12 col-12 mt-1">
+                <p class=" color-require"><label class="text-dark">Mô tả</label></p>
+            </div>
+            <div class="col-md-12 col-sm-12 col-12 mt-1">
+                <textarea name="Note" class="form-control mb-3" id="NoteVouEdit">@Model.Note</textarea>
+            </div>
+        </div>
+        <div class="row col-12 mb-3 mt-3">
+            <div class="col-md-4 offset-md-8 text-right">
+                <button type="button" class="btn btn-outline-secondary" onclick="window.location='/VoucherIntroduce/Index'">Đóng</button>
+                <button type="button" class="btn btn-primary px-3 ml-3" onclick="SaveVoucherIntroduce(@Model.ID)">Lưu</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        CKEDITOR.replace('NoteVouEdit', {
+            height: 300,
+            disableObjectResizing: true
+        });
+        $("#add_logo_place").off('click').on('click', function (e) {
+            e.preventDefault();
+            var fider = new CKFinder();
+
+            fider.selectActionFunction = function (fileUrl) {
+                $("#AddImgLogoPlace ").remove();
+                $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+                var url = window.location.origin + fileUrl;
+                $('#txtAddLogoPlace').val(url);
+            }
+            fider.popup();
+        });
+        $
+    });
+</script>

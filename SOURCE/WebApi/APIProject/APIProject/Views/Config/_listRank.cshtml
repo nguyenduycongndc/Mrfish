@@ -1,0 +1,62 @@
+﻿@using Data.DB
+@using Data.Model.APIWeb
+@using PagedList.Mvc
+@using PagedList
+@model IPagedList<RankNewModel>
+
+<div class="col-md-12">
+    <table class="table table-light table-bordered table-hover table-responsive-sm table-responsive-md">
+        <thead class="text-center text-white bg-thead">
+            <tr>
+                <th class="width-stt">STT</th>
+                <th>Mức rank</th>
+                <th>Số điểm</th>
+                <th>% tiền giảm khi mua hàng</th>
+                <th>Mô tả</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @{
+                if (Model.Count() <= 0)
+                {
+                    <tr>
+                        <td colspan="6">Không có dữ liệu.</td>
+                    </tr>
+                }
+                else
+                {
+                    int stt = ((Model.PageNumber - 1) * Model.PageSize) + 1;
+                    foreach (var data in Model)
+                    {
+                        <tr>
+                            <td>@stt</td>
+                            <td>@data.RankName</td>
+                            <td>@String.Format("{0:n0}", data.MaxPoint) Điểm</td>
+                            <td>@data.DiscountPercent.ToString("0.##") %</td>
+                            <td>@data.Descriptions</td>
+                            <td class="width2btn">
+                                <a data-toggle="tooltip" data-placement="top" title="Sửa thông tin rank" class="cursor-pointer" onclick="LoadRank(@data.ID)">
+                                    <i class="btnEdit fa fa-fw fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        stt++;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<div class="col-md-12">
+    <div class="row float-right mr-1">
+        @*phân trang*@
+        @Html.PagedListPager(
+            Model,
+            page => Url.Action("listRank", "Config", new { Page = page}),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "ListRankNew" })
+            )
+    </div>
+</div>

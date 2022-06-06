@@ -1,0 +1,91 @@
+﻿@using Data.Utils
+@using Data.Model.APIWeb
+@model ListCategoryOutputModel
+
+<div class="modal fade" id="ModalEditCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-fw fa-shopping-cart"></i>Sửa Danh Mục</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="form_update_category" name="form_update_category">
+                    <input id="txtID" name="ID" value="@Model.ID" type="hidden" class="form-control" />
+                    <div class="row m-3">
+                        <p class="mb-0 color-require"><label class="text-dark">Tên Danh Mục</label> *</p>
+                        <input type="text" class="form-control" id="txtEditName" name="Name" placeholder="Nhập tên danh mục..." value="@Model.Name" />
+                    </div>
+                    <div class="row m-3">
+                        <label class="text-dark">Trạng thái</label>
+                        <select class="form-control" id="slStatusEdit" value="@Model.Status">
+                            <option value="@SystemParam.ACTIVE_FALSE" @(Model.Status.Equals(SystemParam.ACTIVE_FALSE) ? Html.Raw("selected") : Html.Raw(""))>Ngừng hoạt động</option>
+                            <option value="@SystemParam.ACTIVE" @(Model.Status.Equals(SystemParam.ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Hoạt động</option>
+                        </select>
+                    </div>
+                    <div class="row m-3">
+                        <p class="mb-0 color-require"><label class="text-dark">Nội dung</label> </p>
+                        <textarea class="form-control" rows="3" id="contentEdit">@Model.Description</textarea>
+                    </div>
+                    @*<div class="row pb-3">*@
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label>*</p>
+                        <div class="col-md-12 col-sm-12 col-12" id="addImage">
+                            <div class="items cursor-pointer col-md-6 pl-0">
+                                <div class="article" id="AddImage">
+                                    <div id="tagImgDiv" style="box-sizing:border-box;display:inline-block;margin-top:10px;"><img width="100%" height="100%" id="imgTag" src="@Model.ImageUrl" alt="your image" /></div>
+                                    <input value="@Model.ImageUrl" class="imgEditCategory" type="hidden" id="txt-url-image" name="ImageUrl" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*</div>*@
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary px-3" onclick="SaveEditCategory(@Model.ID);">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.number').keyup(function () {
+            $val = cms_decode_currency_format($(this).val());
+            $(this).val(cms_encode_currency_format($val));
+        });
+
+        $('#form_update_item #cmbCategoryUpdate').val(@Model.ID);
+
+    });
+
+    $("#addImage").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            $("#tagImgDiv ").remove();
+            $("#AddImage").append('<div id="tagImgDiv" style="box-sizing:border-box;display:inline-block;margin-top:10px;"><img width="100%" height="100%" id="imgTag" src="' + fileUrl + '" alt="your image" /></div>');
+            $("#txt-url-image").val(fileUrl);
+        }
+        fider.popup();
+    });
+
+    //Format money in textbox
+    function cms_encode_currency_format(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    }
+
+    function cms_decode_currency_format(obs) {
+        if (obs == '')
+            return 0;
+        else
+            return parseInt(obs.replace(/,/g, ''));
+    }
+</script>

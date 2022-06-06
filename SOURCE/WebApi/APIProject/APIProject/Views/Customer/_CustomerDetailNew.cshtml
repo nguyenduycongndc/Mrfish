@@ -1,0 +1,310 @@
+﻿@using Data.DB
+@using Data.Model.APIWeb
+@using Data.Utils
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+</head>
+@model ListCustomerDetailNewModel
+
+<div id="ViewDetail" @*class="col-lg-12 col-md-12 col-sm-12 col-12 mt-5"*@ class="row col-md-11 col-sm-11 col-12 bg-white radius-form box-shadow-form mt-5 mb-4" style="margin:auto">
+    <div class="col-md-12">
+        <div class="breadcrumb-holder">
+            <div class="row mb-3 mt-3">
+                <div class="col-md-10 col-sm-10 col-10 text-dark px-0">
+                    <h4><a href="javascript:void(0);" onclick="backToIndexCustomer()"><i class="fa fa-fw fa-arrow-left" style="color:red; font-size:20px;"></i>  </a><i class="fa fa-fw fa-users"></i> Chi tiết khách hàng</h4>
+                </div>
+                <div class="col-md-2 col-sm-2 col-3 text-right px-0">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row col-md-12 col-sm-12 col-12">
+        <div class="col-md-9  col-sm-9 col-12 mt-2 mb-1">
+            <h5><u>Thông tin khách hàng</u></h5>
+        </div>
+    </div>
+    <div class="row col-md-12 col-sm-12 col-12">
+        <div class="col-md-12 col-sm-12 col-12">
+            <div class="col-md-12 col-sm-12 col-12">
+                <div class="row">
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Họ tên</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <label>@Model.CustomerName</label>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Ngày sinh</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <label>@Model.DOB.ToString("dd/MM/yyyy")</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Giới tính</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        @{
+                            if (Model.Sex.Equals(SystemParam.MALE))
+                            {
+                                <label>Nam</label>
+                            }
+                            else if (Model.Sex.Equals(SystemParam.FEMALE))
+                            {
+                                <label>Nữ</label>
+                            }
+                        }
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Số điện thoại</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <label>@Model.PhoneNumber</label>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Email</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <label>@Model.Email</label>
+                    </div>
+                    @*<div class="col-md-2 col-sm-2 col-4 mt-3">
+                            <label>Tỉnh/Thành phố</label>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-8 mt-3">
+                            <label>@Model.ProvinceName</label>
+                        </div>*@
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Hạng khách hàng</label>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-2 mt-3">
+                        <select @*class="form-control"*@ id="cmbRankDetailCus" @*style="width: 60%;"*@ @*onchange="searchCustomer()"*@>
+                            @{
+                                foreach (var p in (List<Ranking>)ViewBag.rank)
+                                {
+                                    {
+                                        <option value="@p.ID" @(Model.RankID == @p.ID ? Html.Raw("selected") : Html.Raw(""))>@p.RankName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <!--<div class="row">-->
+                    @*<div class="col-md-2 col-sm-2 col-4 mt-3">
+                            <label>Địa chỉ cụ thể</label>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-8 mt-3">
+                            <label>@Model.Address</label>
+                        </div>*@
+                    <!--<div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Hạng khách hàng</label>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-2 mt-3">
+                        <select id="cmbRankDetailCus">-->
+                            @*@{
+                                foreach (var p in (List<Ranking>)ViewBag.rank)
+                                {
+                                    {
+                                        <option value="@p.ID" @(Model.RankID == @p.ID ? Html.Raw("selected") : Html.Raw(""))>@p.RankName</option>
+                                    }
+                                }
+                            }*@
+                        <!--</select>
+                    </div>
+                </div>-->
+                <div class="row">
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Reset mật khẩu</label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-8 mt-3">
+                        <button class="btn btn-primary" onclick="RefreshCus(@Model.CustomerID)">Reset mật khẩu</button>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-4 mt-3">
+                        <label>Trạng thái hoạt động</label>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-2 mt-3">
+                        <select class="form-control" id="slStatusCus" value="@Model.Status" @*style="width: 38%;"*@>
+                            <option value="@SystemParam.ACTIVE_FALSE" @(Model.Status.Equals(SystemParam.ACTIVE_FALSE) ? Html.Raw("selected") : Html.Raw(""))>Ngừng hoạt động</option>
+                            <option value="@SystemParam.ACTIVE" @(Model.Status.Equals(SystemParam.ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Hoạt động</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12 col-12 mt-2 mb-1">
+            <h5><u>Thông tin khác</u></h5>
+            @*<h5><u>Lịch sử mua hàng</u></h5>*@
+
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12" id="ListTab">
+        @{
+            //Html.RenderAction("searchOrderHistory", "Customer", new { Page = 1, cusID = CusDetail.ID });
+        }
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#receiveAddress" onclick="">Danh sách địa chỉ nhận hàng</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#memberPointHistory">Điểm tích lũy</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#orderNew">Danh sách đơn hàng</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#referralCode">Danh sách mã giới thiệu</a>
+            </li>
+        </ul>
+        <div class="tab-content" style="overflow: scroll;">
+            <div id="receiveAddress" class="tab-pane fade show active">
+                <div class="row" id="ListReceiveAddress">
+                    @{
+                        Html.RenderAction("searchReceiveAddress", "Customer", new { Page = 1, cusID = Model.CustomerID });
+                    }
+                </div>
+            </div>
+            <div id="memberPointHistory" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-sm-12 col-12  mt-2">
+                        <div class=" text-danger font-weight-bold" style="font-size: 25px;">Tổng điểm tích lũy hiện tại : @String.Format("{0:0,0 điểm}", @ViewBag.sumPoint.Result)</div>
+                    </div>
+                </div>
+                <div class="row" id="ListMemberPointHistory">
+                    @{
+                        Html.RenderAction("searchMemberPointHistory", "Customer", new { Page = 1, cusID = Model.CustomerID });
+                    }
+                </div>
+            </div>
+            <div id="orderNew" class="tab-pane fade">
+                <div class="row" id="ListOrderNew">
+                    @{
+                        Html.RenderAction("searchOrderNew", "Customer", new { Page = 1, cusID = Model.CustomerID });
+                    }
+                </div>
+            </div>
+            <div id="referralCode" class="tab-pane fade">
+                <div class="row" id="ListReferralCode">
+                    @{
+                        Html.RenderAction("searchReferralCode", "Customer", new { Page = 1, cusID = Model.CustomerID });
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row col-12 mb-3 mt-3">
+        <div class="col-md-4 offset-md-8 text-right">
+            <button type="button" class="btn btn-outline-secondary" onclick="window.location='/Customer/Index'">Đóng</button>
+            <button type="button" class="btn btn-primary px-3 ml-3" onclick="SaveEditCus(@Model.CustomerID)">Lưu</button>
+        </div>
+    </div>
+</div>
+@*end customer detail*@
+
+<script>
+    $(document).ready(function () {
+        @*$('select').selectize({
+            sortField: 'text'
+        });
+
+        if (@CusDetail.Role== @SystemParam.ROLE_CUSTOMER_LOYAL) {
+            $('#hiddenRole').prop('hidden', true);
+            $('#hiddenRole_bt').prop('show', true);
+        }
+        if (@CusDetail.Role== @SystemParam.ROLE_CUSTOMER) {
+            $('#hiddenRole').prop('show', true);
+            $('#hiddenRole_bt').prop('hidden', true);
+        }
+        $('.date').datepicker({
+           dateFormat: "dd/mm/yy"
+        });
+
+        $('#EditCustomer #cmbSex').val(@CusDetail.Sex);
+        $('#EditCustomer #cbbStatusUpdate').val(@CusDetail.Status);*@
+
+    }); //end document.ready
+</script>
+
+<script type="text/javascript">
+    $('select').selectize({
+        sortField: 'text'
+    });
+    var count = 0;
+    $("#addImg").off('click').on('click', function (e) {
+        e.preventDefault();
+        count++;
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            $("#divAddImg").append('<div id="img_' + count + '" class="col-md-4 float-left mt-2 text-right"><i onclick="DeleteImg($(this));" src="' + fileUrl + '" class="fa fa-2x fa-remove text-danger" data="img_' + count + '" title="Xóa" ></i><input type="hidden" name="ImageUrl" value="' + fileUrl + '"><img class="imgCreateShop cursor-pointer" width="100%" height="100%" src="' + fileUrl + '" onclick="ChangeImg($(this));" /></div>');
+            var listUrl = $("#txturlImage").val();
+            if (listUrl == "") {
+                listUrl = fileUrl;
+                $("#txturlImage").val(listUrl);
+            }
+            else {
+                var url = listUrl + "," + fileUrl;
+                $("#txturlImage").val(url);
+            }
+        }
+        fider.popup();
+    });
+</script>
+
+<script type="text/javascript">
+    var count = 0;
+    $("#addImg2").off('click').on('click', function (e) {
+        e.preventDefault();
+        count++;
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            $("#divAddImg2").append('<div id="img_' + count + '" class="col-md-4 float-left mt-2" style ="box-sizing:border-box;display:inline-block;margin-top:10px;"><img class="imgCreateShop cursor-pointer" width="100%" height="100%" src="' + fileUrl + '" onclick="ChangeImg($(this));" /><i onclick="DeleteImg($(this));" src="' + fileUrl + '" class="fa fa-2x fa-remove " data="img_' + count + '" title="Xóa"  style="position:relative;top:-42px;left:-23px;color: #ff0000;"></i></div>');
+            var listUrl = $("#txturlImage").val();
+            if (listUrl == "") {
+                listUrl = fileUrl;
+                $("#txturlImage").val(listUrl);
+            }
+            else {
+                var url = listUrl + "," + fileUrl;
+                $("#txturlImage").val(url);
+            }
+        }
+        fider.popup();
+    });
+</script>
+
+<script type="text/javascript">
+    function ChangeImg($url) {
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            var url_old = $url.attr('src');
+            $url.attr('src', fileUrl);
+            if (fileUrl != url_old) {
+                var str = $('#txturlImage').val().replace(url_old, fileUrl);
+                $('#txturlImage').val(str);
+            }
+        }
+        fider.popup();
+    }
+
+</script>
+
+<script type="text/javascript">
+    function DeleteImg(obj) {
+        var temp = obj.attr('data');
+        var url = obj.attr('src');
+        $('#' + temp + '').remove();
+        var str = $('#txturlImage').val();
+        $('#txturlImage').val(str.replace(url, ""));
+    }
+</script>

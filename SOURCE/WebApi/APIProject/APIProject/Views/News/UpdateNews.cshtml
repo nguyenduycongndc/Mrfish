@@ -1,0 +1,232 @@
+﻿@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+@using Data.Utils
+@using Data.Model.APIWeb
+@model ListNewsWebOutputModel
+<div class="col-md-12">
+    <div class="breadcrumb-holder">
+        <div class="row mb-3 mt-3">
+            <div class="col-md-12 col-sm12 col-12 text-dark mt-5">
+                <h4><i class="fa fa-fw fa-newspaper-o"></i> Chỉnh sửa bài viết</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .dropdown-menu {
+        color: #737b84 !important;
+    }
+</style>
+
+<div class="col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-12 bg-white radius-form box-shadow-form mb-5" id="formUpdateNews">
+
+    <div class="row pb-3">
+        <div class="col-md-3 col-sm-6 col-12 mt-3">
+            <p class="mb-0 color-require"><label class="text-dark">Loại tin tức</label> *</p>
+            @*<input type="text" class="form-control number" id="txtDisplay" placeholder="Nhập thứ tự" />*@
+            <select class="form-control" id="cbbType" value="@Model.Type">
+                <option value="3">Tin Tức</option>
+                <option value="4">Khuyễn mãi</option>
+                <option value="6" id="banner">Banner</option>
+            </select>
+        </div>
+        <div class="col-md-3 col-sm-6 col-12 mt-3">
+            <p class="mb-0 color-require"><label class="text-dark">Trạng thái</label> *</p>
+            <select @(Model.timePush.HasValue ? Html.Raw("disabled") : Html.Raw("")) class="form-control" id="cbbStatus" value="@Model.Status">
+                <option @(Model.Status.Equals(1) ? Html.Raw("selected") : Html.Raw("")) value="1">Bài đăng</option>
+                <option @(Model.Status.Equals(0) ? Html.Raw("selected") : Html.Raw("")) value="0">Bản nháp</option>
+            </select>
+        </div>
+        <div class="col-md-3 col-sm-6 col-12 mt-3" id="editnotiCus">
+            <p class="mb-0 color-require"><label class="text-dark">Thông báo đến</label> *</p>
+
+            <select class="myDiv form-control" id="cbbTypeSend" onchange="getItemNews(this.value)">
+                @{ if (Model.TypeSend == SystemParam.TYPE_NO_SEND)
+                    {
+        <option selected value="@SystemParam.TYPE_NO_SEND">Không gửi cho khách hàng </option>
+                        <option value="@SystemParam.TYPE_SEND_ALL">Tất cả khách hàng </option>
+                                        <option value="@SystemParam.TYPE_SEND_CUSTOMER_LOYAL"> Khách hàng thân thiết </option> }
+                                                    else if (Model.TypeSend == SystemParam.TYPE_SEND_ALL)
+                                                    {
+                                        <option value="@SystemParam.TYPE_NO_SEND">Không gửi cho khách hàng </option>
+                                                        <option selected value="@SystemParam.TYPE_SEND_ALL">Tất cả khách hàng </option>
+                                                                        <option value="@SystemParam.TYPE_SEND_CUSTOMER_LOYAL"> Khách hàng thân thiết </option> }
+                                                                                    else if (Model.TypeSend == SystemParam.TYPE_SEND_CUSTOMER_LOYAL)
+                                                                                    {
+                                                                        <option value="@SystemParam.TYPE_NO_SEND">Không gửi cho khách hàng </option>
+                                                                                        <option selected value="@SystemParam.TYPE_SEND_ALL">Tất cả khách hàng </option>
+                                                                                                        <option value="@SystemParam.TYPE_SEND_CUSTOMER_LOYAL"> Khách hàng thân thiết </option> } }
+
+
+
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3" id="editTitle">
+        <div class="col-md-12 col-sm-12 col-12">
+            <p class="mb-0 color-require"><label class="text-dark">Tiêu đề</label> *</p>
+            <input type="text" class="form-control" id="txtTitle" value="@Model.Title" placeholder="Nhập tiêu đề bài viết" />
+        </div>
+    </div>
+    <div class="row pb-3" id="editUNews">
+        <div class="col-md-12 col-sm-12 col-12">
+            <p class="mb-0 color-require"><label class="text-dark">Mô tả</label> *</p>
+            <textarea class="form-control mb-3" id="txt-description">@Model.Depcription</textarea>
+        </div>
+    </div>
+
+    <div class="row pb-3">
+        <div class="col-md-6 col-12">
+            <label class="text-dark">Thời gian đăng bài</label>
+            <input class="form-control" @(Model.Status.Equals(SystemParam.ACTIVE) ? Html.Raw("disabled") : Html.Raw("")) id="date-picker" value="@(Model.timePush.HasValue ? Model.timePush.Value.ToString(SystemParam.CONVERT_DATETIME_HAVE_HOUR) : "")" />
+        </div>
+        <div class="col-md-6 col-12">
+            <label class="text-dark">Sản phẩm</label>
+            <select class="form-control" id="val-item-id">
+                <option value="@null" selected>--Chọn sản phẩm--</option>
+                @{ foreach (var dt in (List<ListItemOutputModel>)ViewBag.lstItem)
+                    {
+        <option @(Model.itemID.HasValue && Model.itemID.Value.Equals(dt.ID) ? Html.Raw("selected") : Html.Raw("") ) value="@dt.ID">@dt.Name</option>
+ } }
+            </select>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <div class="col-md-3 col-sm-12 col-12">
+            <a href="" class="text-bold mb-3" style="width:100%;height:100%; color: #5A5A5A;" id="add_logo_place">
+                <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label> *</p>
+                <div class="news">
+                    <div class="article" id="AddLogoPlace">
+                        <img id="AddImgLogoPlace" src="@Model.UrlImage" class="col-md-12 px-0 contentImg" alt="your image" />
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="row pb-3" id="desUNews">
+        <div class="col-md-12 col-sm-12 col-12">
+            <p class="mb-0 color-require"><label class="text-dark">Nội dung</label> *</p>
+            <textarea class="form-control" rows="3" id="txt-content">@Model.Content</textarea>
+        </div>
+    </div>
+
+    <input type="hidden" id="txtFromDateNews" value="@ViewBag.FromDateNews" />
+    <input type="hidden" id="txtToDateNews" value="@ViewBag.ToDateNews" />
+    <input type="hidden" id="txtTitleNews" value="@ViewBag.TitleNews" />
+    <input type="hidden" id="txtCreateUserIDNews" value="@ViewBag.CreateUserIDNews" />
+    <input type="hidden" id="txtTypeNews" value="@ViewBag.TypeNews" />
+    <input type="hidden" id="txtStatusNews" value="@ViewBag.StatusNews" />
+    <input type="hidden" id="txtPageCurrentNews" value="@ViewBag.PageCurrentNews" />
+
+    @*<div class="col-md-12 border-form mt-2"></div>*@
+
+    <div class="row pb-2 pt-2 text-right">
+        <div class="col-md-12 col-sm-12 col-12 txtBeauty" value="@Model.Status">
+            @*<button class="btn btn-outline-secondary" onclick="searchNewsAgain();"><i class="fa fa-fw fa-arrow-left"></i> Trở về</button>*@
+            <a class="btn btn-outline-secondary" href="/News/Index"><i class="fa fa-fw fa-arrow-left"></i> Trở về</a>
+
+            <button class="btn btn-success" onclick="updateNews(@Model.ID);"><i class="fa fa-fw fa-save"></i> Cập nhật</button>
+
+        </div>
+    </div>
+</div> <!-- END col-md-8 panel form create -->
+
+
+<script>
+    $(document).ready(function () {
+        $('#date-picker').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm'
+        });
+        $('#date-picker').on('dp.change', function () {
+            if ($(this).val().length > 0)
+                $('#cbbStatus').attr('disabled', true)
+            else
+                $('#cbbStatus').attr('disabled', false)
+        })
+
+        $('#formUpdateNews #cbbItemNews').val(@Model.CategoryID);
+        if ($("#cbbType").val() == 6) {
+            $("#editnotiCus").prop("hidden", true);
+            $("#cbbType").prop("disabled", true);
+            $("#editUNews").prop("hidden", true);
+            $("#desUNews").prop("hidden", true);
+            $("#editTitle").prop("hidden", true);
+
+        } else {
+            $("#banner").prop("hidden", true);
+        }
+        var category = $('#formUpdateNews #cbbType').val();
+        if (category == 4) {
+            $('#cbbItemNews').removeAttr('disabled');
+            $('#labelItem').css('color', '#5A5A5A');
+        }
+        else {
+            $('#cbbItemNews').attr("disabled", "disabled");
+            $('#labelItem').css('color', 'hsl(0, 0%, 85%)');
+        }
+
+        CKEDITOR.replace('txt-content', {
+            height: 300,
+            disableObjectResizing: true
+        });
+
+        CKEDITOR.on('dialogDefinition', function (ev) {
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+            //var editorO = ev.data.definition.dialog.getParentEditor();
+
+            if (dialogName == 'image' || dialogName == 'image2') {
+                var infoTab = dialogDefinition.getContents('info');
+
+                if (dialogName == 'image') {
+                    infoTab.remove('txtHeight');
+                    infoTab.remove('txtWidth');
+                    infoTab.remove('ratioLock');
+                }
+                else {
+                    infoTab.remove('height');
+                    infoTab.remove('width');
+                    infoTab.remove('lock');
+                }
+            }
+        });
+
+    });
+
+    function getItemNews(category) {
+        if (category == 4) {
+            $('#cbbItemNews').removeAttr('disabled');
+            $('#labelItem').css('color', '#5A5A5A');
+        }
+        else {
+            $('#cbbItemNews').attr("disabled", "disabled");
+            $('#labelItem').css('color', 'hsl(0, 0%, 85%)');
+        }
+    }
+
+    $("#add_logo_place").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            $("#AddImgLogoPlace ").remove();
+            $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+            var url = window.location.origin + fileUrl;
+            $('#txtAddLogoPlace').val(url);
+        }
+        fider.popup();
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $('#cbbStatus').on('change', function () {
+            var demovalue = $(this).val();
+            $("div.myDiv").hide();
+            $("#cbbTypeSend" + demovalue).show();
+        });
+        if (@Model.Status == 1) {
+            $("#cbbStatus").prop("disabled", true);
+            $("#cbbTypeSend").prop("disabled", true);
+        }
+    });
+</script>

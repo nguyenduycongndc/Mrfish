@@ -1,0 +1,73 @@
+﻿@using Data.Model.APIWeb
+@using Data.Utils
+@using PagedList.Mvc
+@using APIProject.Controllers
+@model PagedList.IPagedList<ListCategoryOutputModel>
+<table class="table table-bordered table-hover mt-2 w-100">
+    <thead class="text-center">
+        <tr>
+            <th>STT</th>
+            <th>Tên danh mục</th>
+            <th>Trạng thái</th>
+            <th>Người tạo</th>
+            <th>Ngày tạo</th>
+            <th>Chức năng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            if (Model.Count() <= 0)
+            {
+                <tr class="text-center" >
+                    <td colspan="6">Không có dữ liệu.</td>
+                </tr>
+            }
+            else
+            {
+                int STT = ((Model.PageNumber - 1) * Model.PageSize);
+                foreach (var p in Model)
+                {
+                    STT = STT + 1;
+
+    <tr>
+        <td>@STT</td>
+        <td>@p.Name</td>
+        <td>
+            @{
+                switch (p.Status)
+                {
+                    case SystemParam.STATUS_NO_ACTIVE: <p style="margin-bottom: 0">Ngưng hoạt động</p> break;
+                    case SystemParam.STATUS_ACTIVE: <p style="margin-bottom: 0">Hoạt động</p> break;
+                }
+            }
+        </td>
+        <td class="text-center">@p.UserName</td>
+        <td class="text-center">@p.getStrCreateDate</td>
+        <td class="width2btn">
+            <a data-toggle="tooltip" data-placement="top" title="Sửa sản phẩm" class="cursor-pointer" onclick="editCategory(@p.ID)">
+                <i class="btnEdit fa fa-fw fa-edit"></i>
+            </a>
+            <a data-toggle="tooltip" data-placement="top" title="Xóa sản phẩm." class="cursor-pointer" onclick="DeleteCategory(@p.ID)">
+                <i class="btnDelete fa fa-fw fa-trash-o"></i>
+            </a>
+        </td>
+       
+    </tr>
+
+                }
+            }
+        }
+    </tbody>
+</table>
+<div class="col-md-12">
+    <div class="row float-right">
+        @*phân trang*@
+        @Html.PagedListPager(Model, Page => Url.Action("Search", new { Page, Name = ViewBag.Name, FromDate = ViewBag.FromDateCate, ToDate = ViewBag.ToDateCate }),
+     PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+     {
+         HttpMethod = "GET",
+         UpdateTargetId = "TableCategory"
+     })
+     )
+    </div>
+</div>

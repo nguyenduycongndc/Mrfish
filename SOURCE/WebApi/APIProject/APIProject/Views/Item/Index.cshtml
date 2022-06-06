@@ -1,0 +1,163 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Data.Utils
+
+<div class="breadcrumb-holder">
+    <div class="row mt-5">
+        <div class="col-md-10 col-sm-12 col-12 text-dark mt-2">
+            <h4><i class="fa fa-fw fa-product-hunt"></i> Quản lý sản phẩm</h4>
+        </div>
+        @*<div class="col-md-2 col-sm-12 col-12 mt-2">
+                <button class="btn btn-create btn-block" onclick="resetInputItem();"><i class="fa fa-plus"></i> Thêm sản phẩm</button>
+            </div>*@
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4 col-sm-4 col-12 mt-1">
+        <input value="" type="text" id="itemName" class="form-control" placeholder="Nhập tên hoặc mã sản phẩm" onkeyup="SearchItem()" />
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <select id="cbbCategorySearch" class="form-control" onchange="SearchItem();">
+            @{
+                <option value="1">Tất cả danh mục</option>
+                foreach (var p in ViewBag.listCategory)
+                {
+                    <option value="@p.Name">@p.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <input type="date"  id="fromDateItem" class="form-control" onchange="SearchItem();" placeholder="Từ ngày" />
+        @*<input type="text" id="fromDateItem" class="form-control relative-icon-calendar date" onchange="SearchItem();" placeholder="Từ ngày" />
+        <i class="fa fa-calendar absolute-icon-calendar"></i>*@
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <input type="date"  id="toDateItem" class="form-control" onchange="SearchItem();" placeholder="Đến ngày" />
+        @*<input type="text" id="toDateItem" class="form-control relative-icon-calendar date" onchange="SearchItem();" placeholder="Đến ngày" />
+        <i class="fa fa-calendar absolute-icon-calendar"></i>*@
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <select class="form-control" onchange="SearchItem();" id="slStatus">
+            <option>Trạng thái</option>
+            <option value="@SystemParam.STATUS_NO_ACTIVE">Ngưng hoạt động</option>
+            <option value="@SystemParam.STATUS_ACTIVE">Hoạt động</option>
+        </select>
+    </div>
+    <div class="col-md-2 col-sm-2 col-12 mt-1">
+        <select class="form-control" onchange="SearchItem();" id="slIsHot">
+            <option>Sản phẩm bán chạy</option>
+            <option value="@SystemParam.UN_ISHOT_ACTIVE">Không</option>
+            <option value="@SystemParam.ISHOT_ACTIVE">Có</option>
+        </select>
+    </div>
+    <div class="col-md-8 col-sm-8 col-12 mt-2" style="text-align: right">
+        <button class="btn btn-primary" onclick="resetInputItem();"><i class="fa fa-plus"></i>Thêm sản phẩm</button>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12" id="tableItem">
+        @{Html.RenderAction("SearchWeb", "Item", new { Page = 1, fromDate = "", toDate="", itemName="", category=""}); }
+    </div>
+</div>
+
+<div id="UpdateItem">
+
+</div>
+<script type="text/javascript">
+    $("#addImg").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            $("#DivtagImg ").remove();
+            $("#divAddImg").append('<div id="DivtagImg" style ="box-sizing:border-box;display:inline-block;margin-top:10px;"><img width="180" height="120" src="' + fileUrl + '" /></div>');
+            $("#txt-url-img").val(fileUrl);
+        }
+        fider.popup();
+    });
+</script>
+@*<script type="text/javascript">
+        function DeleteImg() {
+            $("#DivtagImg ").remove();
+            $("#txt-url-img").val("");
+        }
+    </script>*@
+
+@*<style>
+        td {
+            white-space: normal !important;
+        }
+    </style>*@
+
+<script>
+
+    $(document).ready(function () {
+
+        //CKEDITOR.replace('editor', {
+        //    height: 300
+        //});
+
+        CKEDITOR.replace('editor', {
+            height: 300,
+            disableObjectResizing: true
+        });
+
+        CKEDITOR.on('dialogDefinition', function (ev) {
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+            //var editorO = ev.data.definition.dialog.getParentEditor();
+
+            if (dialogName == 'image' || dialogName == 'image2') {
+                var infoTab = dialogDefinition.getContents('info');
+
+                if (dialogName == 'image') {
+                    infoTab.remove('txtHeight');
+                    infoTab.remove('txtWidth');
+                    infoTab.remove('ratioLock');
+                }
+                else {
+                    infoTab.remove('height');
+                    infoTab.remove('width');
+                    infoTab.remove('lock');
+                }
+            }
+        });
+    });
+
+    $("#add_logo_place").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            $("#AddImgLogoPlace ").remove();
+            $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+            var url = window.location.origin + fileUrl;
+            $('#txtAddLogoPlace').val(url);
+        }
+        fider.popup();
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $("#cbbCategorySearch").on('change', function () {
+            $("#btnSearchItem").click();
+        });
+    })
+</script>
+<script>
+    $('#itemName').keypress(function (e) {
+        if (e.which == 13) {  //Enter is key 13
+            SearchItem();
+        }
+    });
+</script>

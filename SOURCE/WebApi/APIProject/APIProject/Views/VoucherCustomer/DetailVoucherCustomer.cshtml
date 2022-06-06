@@ -1,0 +1,284 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Data.DB
+@using Data.Utils
+@using Data.Model.APIWeb
+@model VoucherCustomerNewModel
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+<div class="col-md-12 mt-5">
+    <div class="breadcrumb-holder">
+        <div class="row mb-3 mt-3">
+            <div class="col-md-10 col-sm-10 col-9 text-dark px-0 mt-3">
+                <h4><i class="fa fa-ticket ic-menu"></i> Sửa voucher khách hàng </h4>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="form_create_item" name="form_create_item" class="">
+    <div class="row col-md-11 col-sm-11 col-12 bg-white radius-form box-shadow-form mb-5" style="margin:auto">
+        <!--Left content-->
+        <div class="col-lg-4 col-md-4">
+            <div class="row ">
+                <div class="col-md-4 col-4 mt-3">
+                    <label class="text-dark">Mã Voucher</label>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    <label>@Model.Code</label>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-md-4 col-4 mt-3">
+                    <label class="text-dark">Tên Voucher</label>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    <label>@Model.Name</label>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-md-4 col-4 mt-4">
+                    <label class="text-dark">Số lượng quy định</label>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    <input onkeypress='validateSLEdit(event)' type="text" class="form-control" id="quantityVoucherCustomerEdit" name="_quantity" placeholder="Số lượng" value="@Model.Quantity">
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-md-4 col-4 mt-3">
+                    <label class="text-dark">Số lượng đã sử dụng</label>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    <a style="color:red">@Model.AmountUsed</a>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-md-4 col-4 mt-3">
+                    <label class="text-dark">Số lượng còn lại</label>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    <a style="color:red">@Model.Remain</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-4 mt-3">
+                    <label class="text-dark">Loại mã</label>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    @{
+                        switch (Model.TypeDiscount)
+                        {
+                            case SystemParam.COUPON_DISCOUNT_MONEY:
+                                <a>Theo tiền</a>
+                                break;
+                            case SystemParam.COUPON_DISCOUNT_PERCENT:
+                                <a>Theo %</a>
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <div class="row ">
+                <div class="col-md-4 col-4 mt-3">
+                    <label class="text-dark">Mức giảm</label>
+                </div>
+                <div class="col-md-7 col-7 mt-3">
+                    @{
+                        switch (Model.TypeDiscount)
+                        {
+                            case SystemParam.COUPON_DISCOUNT_MONEY:
+                                <a>@String.Format("{0:n0}", Model.Discount) VNĐ</a>
+                                break;
+                            case SystemParam.COUPON_DISCOUNT_PERCENT:
+                                <a>@String.Format("{0:n0}", Model.Discount) %</a>
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-4 mt-3">
+                    <p class="mb-0 color-require mt-2"><label class="text-dark">Trạng thái</label> *</p>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    <select class="form-control" id="slStatusVoucherCustomerEdit">
+                        <option>Trạng thái</option>
+                        <option value="@SystemParam.STATUS_NO_ACTIVE" @(Model.Status.Equals(SystemParam.STATUS_NO_ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Ngưng hoạt động</option>
+                        <option value="@SystemParam.STATUS_ACTIVE" @(Model.Status.Equals(SystemParam.STATUS_ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Hoạt động</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 row" id="add_logo_place">
+                    <div class="col-md-4 col-sm-4 col-12 mt-3">
+                        <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label>*</p>
+                    </div>
+                    <div class="col-md-8 col-sm-8 col-12 mt-3 article" id="AddLogoPlace">
+                        <img id="AddImgLogoPlace" src="@Model.ImageUrl" class="col-md-12 px-0 contentImg" alt="your image" style="width: 100%" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <div class="row">
+                <div class="col-md-4 col-4 mt-3">
+                    <label class="text-dark">Hạng Thành viên</label>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    @{
+                        if (Model.RankTV == 1)
+                        {
+                            <a style="color: green; font-size: large">Có</a>
+                        }
+                        else
+                        {
+                            <a style="color: red; font-size: large">Không</a>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-4 mt-3">
+                    <label class="text-dark">Hạng Bạc</label>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    @{
+                        if (Model.RankB == 1)
+                        {
+                            <a style="color: green; font-size: large ">Có</a>
+                        }
+                        else
+                        {
+                            <a style="color: red; font-size: large">Không</a>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-4 mt-3">
+                    <label class="text-dark">Hạng vàng</label>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    @{
+                        if (Model.RankV == 1)
+                        {
+                            <a style="color: green; font-size:large">Có</a>
+                        }
+                        else
+                        {
+                            <a style="color: red; font-size: large">Không</a>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-4 mt-3">
+                    <label class="text-dark">Hạng kim cương</label>
+                </div>
+                <div class="col-md-8 col-8 mt-3">
+                    @{
+                        if (Model.RankKC == 1)
+                        {
+                            <a style="color: green; font-size: large ">Có</a>
+                        }
+                        else
+                        {
+                            <a style="color: red; font-size: large">Không</a>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row col-lg-12 col-md-12 col-12 mt-2">
+            <h5><u>Thời gian áp dụng</u></h5>
+        </div>
+        <div class="row col-lg-12 col-md-12 col-12 mt-2">
+            <div class="row col-lg-6 col-md-6 col-12 mt-2">
+                <div class="col-lg-3 col-md-3 col-12 mt-3">
+                    <label class="text-dark">Thời gian bắt đầu</label>
+                </div>
+                <div class="col-lg-9 col-md-9 col-12 mt-2">
+                    <input type="date" data-date-format="dd/MM/yyyy" id="fromDateVoucherEdit" class="form-control" placeholder="Từ ngày" value="@Model.DetailFromDate" />
+                </div>
+            </div>
+            <div class="row col-lg-6 col-md-6 col-12 mt-2">
+                <div class="col-lg-3 col-md-3 col-12 mt-3">
+                    <label class="text-dark">Thời gian kết thức</label>
+                </div>
+                <div class="col-lg-9 col-md-9 col-12 mt-2">
+                    <input type="date" data-date-format="dd/MM/yyyy" id="toDateVoucherEdit" class="form-control" placeholder="Đến ngày" value="@Model.DetailToDate" />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row col-lg-12 col-md-12 col-12 mt-2">
+            <div class="col-md-12 col-sm-12 col-12 mt-1">
+                <p class=" color-require"><label class="text-dark">Mô tả</label></p>
+            </div>
+            <div class="col-md-12 col-sm-12 col-12 mt-1">
+                <textarea name="Note" class="form-control mb-3" id="NoteVoucherCustomerEdit">@Model.Note</textarea>
+            </div>
+        </div>
+        <div class="row col-12 mb-3 mt-3">
+            <div class="col-md-4 offset-md-8 text-right">
+                <button type="button" class="btn btn-outline-secondary" onclick="window.location='/VoucherCustomer/Index'">Đóng</button>
+                <button type="button" class="btn btn-primary px-3 ml-3" onclick="SaveVoucherCustomer(@Model.ID)">Lưu</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        CKEDITOR.replace('NoteVoucherCustomerEdit', {
+            height: 300,
+            disableObjectResizing: true
+        });
+        $("#add_logo_place").off('click').on('click', function (e) {
+            e.preventDefault();
+            var fider = new CKFinder();
+
+            fider.selectActionFunction = function (fileUrl) {
+                $("#AddImgLogoPlace ").remove();
+                $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+                var url = window.location.origin + fileUrl;
+                $('#txtAddLogoPlace').val(url);
+            }
+            fider.popup();
+        });
+
+        $('#testRank').selectpicker();
+    });
+    function validateSLEdit(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+</script>

@@ -1,0 +1,181 @@
+﻿@using Data.Model.APIWeb
+@using Data.Utils
+@model CustomerModel
+@using Data.DB
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="col-md-12 mt-5">
+    <div class="breadcrumb-holder">
+        <div class="row mb-3 mt-3">
+            <div class="col-md-10 col-sm-9 text-dark px-0 mt-3">
+                <h4><i class="fa fa-user-secret" aria-hidden="true"></i> Thông tin tài khoản</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-9 col-sm-9 col-12 bg-white radius-form box-shadow-form mb-5" style="margin:auto" id="tableUser">
+        <form id="form_update_user" name="form_update_user">
+            <div class="row pb-3">
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <label style=" margin-top: 9px;">Tên người dùng</label><a style="color:red">*</a>
+                    </div>
+                    <div class="col-md-9 col-sm-8 col-12 mt-3">
+                        <input class="form-control" id="UserEdit" value="@Model.Name" placeholder="Nhập tên người dùng" />
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <label style=" margin-top: 9px;">Số điện thoại</label><a style="color:red">*</a>
+                    </div>
+                    <div class="col-md-9 col-sm-8 col-12 mt-3">
+                        <input class="form-control" id="PhoneEdit" value="@Model.Phone" placeholder="Nhập số điện thoại" maxlength="10" disabled />
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <label style=" margin-top: 9px;">Ngày sinh</label><a style="color:red">*</a>
+                    </div>
+                    <div class="col-md-9 col-sm-8 col-12 mt-3">
+                        <input class="form-control relative-icon-calendar date" id="DOBEdit" placeholder="Ngày sinh" value="@Model.DOB.ToString("dd/MM/yyyy")" />
+                        <i class="fa fa-calendar absolute-icon-calendar" style="top: 9px;"></i>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <label style=" margin-top: 9px;">Tỉnh/Thành phố</label>
+                    </div>
+                    <div class="col-md-9 col-sm-8 col-12 mt-3">
+                        <select class="form-control" id="slProvinceUDetail" value="@Model.ProvinceCode" @*onchange="loadListDistrict(this.value)"*@>
+                            @{
+                                foreach (var p in ViewBag.listProvince)
+                                {
+                                    <option value="@p.Code" @(Model.ProvinceCode == @p.Code ? Html.Raw("selected") : Html.Raw(""))>@p.Name</option>
+                                }
+                            }
+                            
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <label style=" margin-top: 9px;">Địa chỉ nhà</label>
+                    </div>
+                    <div class="col-md-9 col-sm-8 col-12 mt-3">
+                        <input class="form-control" id="AddressEdit" placeholder="Địa chỉ nhà" value="@Model.Address" />
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <label style=" margin-top: 9px;">Giới tính</label>
+                    </div>
+                    <div class="col-md-9 col-sm-8 col-12 mt-3">
+                        <select class="form-control" id="slSexEdit" value="@Model.Sex">
+                            <option value="@SystemParam.MEN" @(Model.Sex.Equals(@SystemParam.MEN) ? Html.Raw("selected") : Html.Raw(""))>Nam</option>
+                            <option value="@SystemParam.WOMEN" @(Model.Sex.Equals(@SystemParam.WOMEN) ? Html.Raw("selected") : Html.Raw(""))>Nữ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <label style=" margin-top: 9px;">Email</label>
+                    </div>
+                    <div class="col-md-9 col-sm-8 col-12 mt-3">
+                        <input type="email" class="form-control" id="mailEdit" value="@Model.Email" />
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <label style=" margin-top: 9px;">Vai trò</label><a style="color:red">*</a>
+                    </div>
+                    @{
+                        if (@Model.Role == SystemParam.ROLE_ADMIN)
+                        {
+                            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                                <select class="form-control" id="slRoleEdit" value="@Model.Role" disabled>
+                                    <option value="@SystemParam.ROLE_ADMIN" @(Model.Role.Equals(SystemParam.ROLE_ADMIN) ? Html.Raw("selected") : Html.Raw(""))>Admin</option>
+                                </select>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-9 col-sm-8 col-12 mt-3">
+                                <select class="form-control" id="slRoleEdit" value="@Model.Role" disabled>
+                                    <option value="@SystemParam.ROLE_EDITOR" @(Model.Role.Equals(SystemParam.ROLE_EDITOR) ? Html.Raw("selected") : Html.Raw(""))>Biên tập</option>
+                                    <option value="@SystemParam.ROLE_ACCOUNTANT" @(Model.Role.Equals(SystemParam.ROLE_ACCOUNTANT) ? Html.Raw("selected") : Html.Raw(""))>Kế toán</option>
+                                </select>
+                            </div>
+                        }
+                    }
+                    @*<div class="col-md-9 col-sm-8 col-12 mt-3">
+                            <select class="form-control" id="slRoleEdit" value="@Model.Role">
+                                <option value="2" @(Model.Role.Equals(SystemParam.ROLE_EDITOR) ? Html.Raw("selected") : Html.Raw(""))>Biên tập</option>
+                                <option value="3" @(Model.Role.Equals(SystemParam.ROLE_ACCOUNTANT) ? Html.Raw("selected") : Html.Raw(""))>Kế toán</option>
+                            </select>
+                        </div>*@
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <label style=" margin-top: 9px;">Trạng thái</label><a style="color:red">*</a>
+                    </div>
+                    <div class="col-md-9 col-sm-8 col-12 mt-3">
+                        <select class="form-control" id="slStatusEdit" value="@Model.Status" disabled>
+                            <option value="@SystemParam.ACTIVE_FALSE" @(Model.Status.Equals(SystemParam.ACTIVE_FALSE) ? Html.Raw("selected") : Html.Raw(""))>Ngừng hoạt động</option>
+                            <option value="@SystemParam.ACTIVE" @(Model.Status.Equals(SystemParam.ACTIVE) ? Html.Raw("selected") : Html.Raw(""))>Hoạt động</option>
+                        </select>
+                    </div>
+                </div>
+                @*<div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                        <div class="col-md-3 col-sm-4 col-12 mt-3">
+                            <label style=" margin-top: 9px;">Mật khẩu</label><a style="color:red">*</a>
+                        </div>
+                        <div class="col-md-9 col-sm-8 col-12 mt-3">
+                            <input type="password" class="form-control" id="PasswordEdit" placeholder="Nhập mật khẩu" value="@Model.Password" disabled />
+                        </div>
+                    </div>*@
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <label style=" margin-top: 9px;">Ghi chú</label>
+                    </div>
+                    <div class="col-md-9 col-sm-8 col-12 mt-3">
+                        <textarea class="form-control" id="NoteEdit" placeholder="Ghi chú">@Model.Note</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 mt-3 row" id="add_logo_place">
+                    <div class="col-md-3 col-sm-4 col-12 mt-3">
+                        <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label></p>
+                    </div>
+                    <div class="col-md-9 col-sm-8 col-12 mt-3 article" id="AddLogoPlace">
+                        <img id="AddImgLogoPlace" src="@Model.AvatarUrl" src="/Uploads/files/add_img.png" class="col-md-12 px-0 contentImg" alt="your image" />
+                    </div>
+                </div>
+            </div>
+
+        </form>
+        <div class="col-md-4 col-12 text-right" style="margin: 0% 0% 2% 63%">
+            <button type="button" class="btn btn-danger" onclick="closeUserDetail()">Đóng</button>
+            @*<button type="button" class="btn btn-warning" onclick="refreshUser(@Model.UserID)">Reset mật khẩu</button>*@
+            <button type="button" class="btn btn-primary px-3" onclick="editUserDetal(@Model.UserID)">Lưu</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#add_logo_place").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            debugger
+            $("#AddImgLogoPlace ").remove();
+            $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+            var url = /*window.location.origin + */fileUrl;
+            $('#txtAddLogoPlace').val(url);
+        }
+        fider.popup();
+    });
+</script>

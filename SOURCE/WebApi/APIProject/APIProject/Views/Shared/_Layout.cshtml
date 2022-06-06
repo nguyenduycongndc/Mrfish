@@ -1,0 +1,340 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/Scripts/JsBarcode.all.min.js"></script>
+    <script src="~/Scripts/JsBarcode.code128.min.js"></script>
+    <script src="~/Scripts/jquery.maskMoney.min.js"></script>
+    <title>MrFish</title>
+    <link rel="shortcut icon" href="~/Content/images/MrFishLogo.png" />
+
+    @*@Styles.Render("~/layout/css")*@
+    @Styles.Render("~/dekko/css")
+    @Scripts.Render("~/layout/js")
+    @Scripts.Render("~/dekko/js")
+    @Scripts.Render("~/bundle/js")
+    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
+    @{
+        var roles = string.Empty;
+        if (HttpContext.Current.Request.Cookies["Roles"].Value != null)
+        {
+            roles = HttpContext.Current.Request.Cookies["Roles"].Value;
+        }
+    }
+</head>
+<body class="theme-orange" ng-app="appDekko" ng-controller="controllerDekko">
+    <div class="divLoading" style="display: none">
+        <div class="col-md-12 spinner">
+            <img class="spinner" src="~/Content/images/MrFishLogo.png" />
+            @*<span class="text-white spinner" style="font-size: 20px; height: 200px; text-align: center; margin-top: 28%">Đang xử lý...</span>*@
+        </div>
+    </div>
+    <input type="hidden" id="txtRole" />
+    <div id="wrapper">
+        <nav class="navbar navbar-fixed-top" style="background: radial-gradient(circle, var(--indigo) 0%, rgb(232 62 140 / 32%) 100%); border-radius: 25px;">
+            <div class="container-fluid" style="height:97px;">
+                <div class="navbar-btn mb-3">
+                    <button type="button" class="btn-toggle-offcanvas text-white"><i class="lnr lnr-menu fa fa-bars" style="color:rgb(215,174,62);"></i></button>
+                </div>
+                <div class="navbar-brand d-inline-flex p-2 text-sm-center">
+                    <!-- d-inline-flex p-2 giống wrap-content của android-->
+                    <a href="/Home/Index" class="ml-md-3"><img src="~/Content/images/MrFishLogo.png" class="img-responsive logo" style="height:80px;width:auto;"></a>
+                </div>
+                <div class="navbar-btn">
+                    <button type="button" class="btn-toggle-offcanvas "></button>
+                </div>
+
+                <div class="navbar-right position-absolute  " style="margin-left:150px;">
+                    <div class="user-account float-right">
+                        <div class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle user-name" data-toggle="dropdown">
+                                <strong class="" id="userNameLogin"></strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right account">
+                                <li data-toggle="modal" data-target="#changePassword" onclick="Reload();"><a href="#"><i class="fa fa-user-o"></i>Đổi mật khẩu</a></li>
+                                <li class="divider"></li>
+                                <li><a href="" onclick="logout();"><i class="fa fa-sign-out"></i>Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="listNoti">
+                        @{
+                            Html.RenderAction("_ListNotification", "Home");
+                        }
+                    </div>
+                    
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="left-sidebar" class="sidebar" style="margin-top: 100px;">
+        <div class="sidebar-scroll bg-white">
+            <div class="tab-content p-l-0 p-r-0 bg-white">
+                <div class="tab-pane active">
+                    <nav class="sidebar-nav">
+                        <ul class="main-menu metismenu" style="overflow-y: scroll">
+
+                            @if (roles == "3")
+                            {
+                                <li id="tabHome">
+                                    <a href="/Home/Index"><i class="fa fa-tachometer ic-menu"></i>Tổng quan</a>
+                                </li>
+                                <li id="tabCustomer">
+                                    <a href="/Customer/Index"><i class="fa fa-users ic-menu"></i>Khách hàng</a>
+                                </li>
+                                <li id="tabOrder">
+                                    <a href="/Order/Index"><i class="fa fa-shopping-basket ic-menu"></i>Đơn hàng <small><span class="sec counter counter-lg text-white badge badge-pill m-0 p-1" style="background-color:darkorange; color: rgb(231,211,90);" id="all-new-order"></span></small></a>
+                                </li>
+                                <li id="tabDetail" style="margin-bottom:80px;">
+                                    <a href="/User/Detail"><i class="fa fa-user-secret ic-menu"></i>Thông tin tài khoản</a>
+                                </li>
+                            }
+                            else if (roles == "2")
+                            {
+                                <li id="tabHome">
+                                    <a href="/Home/Index"><i class="fa fa-tachometer ic-menu"></i>Tổng quan</a>
+                                </li>
+                                <li id="tabCategory">
+                                    <a href="/Category/Index"><i class="fa fa-th-list ic-menu"></i>Danh mục</a>
+                                </li>
+                                <li id="tabItem">
+                                    <a href="/Item/Index"><i class="fa fa-product-hunt ic-menu"></i>Sản phẩm</a>
+                                </li>
+                                <li id="tabItemSale">
+                                    <a href="/ItemSale/Index"><i class="fa fa-gift ic-menu"></i>Sản phẩm khuyến mại</a>
+                                </li>
+                                <li id="tabBanner">
+                                    <a href="/Banner/Index"><i class="fa fa-flag ic-menu"></i>Banner và chính sách</a>
+                                </li>
+                                <li id="tabVoucher">
+                                    <a href="#" class="has-arrow"><i class="fa fa-ticket ic-menu"></i>Voucher</a>
+                                    <ul id="ulVoucher">
+                                        <li id="tabVoucherCustomer"><a style="font-size: 13px; padding-right: 0px;" href="/VoucherCustomer/Index"><i class="fa fa-user"></i>Voucher khách hàng</a></li>
+                                        <li id="tabVoucherIntroduce"><a style="font-size: 13px; padding-right: 0px;" href="/VoucherIntroduce/Index"><i class="fa fa-user-plus"></i>Voucher giới thiệu</a></li>
+                                    </ul>
+                                </li>
+                                <li id="tabConfig">
+                                    <a href="/Config/Index"><i class="fa fa-cogs ic-menu"></i>Cấu hình</a>
+                                </li>
+                                <li id="tabDetail" style="margin-bottom:80px;">
+                                    <a href="/User/Detail"><i class="fa fa-user-secret ic-menu"></i>Thông tin tài khoản</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li id="tabHome">
+                                    <a href="/Home/Index"><i class="fa fa-tachometer ic-menu"></i>Tổng quan</a>
+                                </li>
+                                <li id="tabCustomer">
+                                    <a href="/Customer/Index"><i class="fa fa-users ic-menu"></i>Khách hàng</a>
+                                </li>
+                                <li id="tabCategory">
+                                    <a href="/Category/Index"><i class="fa fa-th-list ic-menu"></i>Danh mục</a>
+                                </li>
+                                <li id="tabItem">
+                                    <a href="/Item/Index"><i class="fa fa-product-hunt ic-menu"></i>Sản phẩm</a>
+                                </li>
+                                <li id="tabOrder">
+                                    <a href="/Order/Index"><i class="fa fa-shopping-basket ic-menu"></i>Đơn hàng <small><span class="sec counter counter-lg text-white badge badge-pill m-0 p-1" style="background-color:darkorange; color: rgb(231,211,90);" id="all-new-order"></span></small></a>
+                                </li>
+                                <li id="tabItemSale">
+                                    <a href="/ItemSale/Index"><i class="fa fa-gift ic-menu"></i>Sản phẩm khuyến mại</a>
+                                </li>
+                                <li id="tabBanner">
+                                    <a href="/Banner/Index"><i class="fa fa-flag ic-menu"></i>Banner và chính sách</a>
+                                </li>
+                                <li id="tabVoucher">
+                                    <a href="#" class="has-arrow"><i class="fa fa-ticket ic-menu"></i>Voucher</a>
+                                    <ul id="ulVoucher">
+                                        <li id="tabVoucherCustomer"><a style="font-size: 13px; padding-right: 0px;" href="/VoucherCustomer/Index"><i class="fa fa-user"></i>Voucher khách hàng</a></li>
+                                        <li id="tabVoucherIntroduce"><a style="font-size: 13px; padding-right: 0px;" href="/VoucherIntroduce/Index"><i class="fa fa-user-plus"></i>Voucher giới thiệu</a></li>
+                                    </ul>
+                                </li>
+                                <li id="tabConfig">
+                                    <a href="/Config/Index"><i class="fa fa-cogs ic-menu"></i>Cấu hình</a>
+                                </li>
+                                <li id="tabUser">
+                                    <a href="/User/Index"><i class="fa fa-user-secret ic-menu"></i>Tài khoản</a>
+                                </li>
+
+                                <li id="tabDetail" style="margin-bottom:80px;">
+                                    <a href="/User/Detail"><i class="fa fa-user-secret ic-menu"></i>Thông tin tài khoản</a>
+                                </li>
+                            }
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="main-content">
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+    </div>
+    <script src="~/Scripts/jquery.maskMoney.min.js"></script>
+</body>
+</html>
+
+<script>
+    $(document).ready(function () {
+
+        socket();
+        //đổi mật khẩu - xác nhận mật khẩu đúng thì hiện icon check
+        $("#txtConfirmPassword").on("keyup", function () {
+            var password = $('#txtNewPassword').val();
+            var confirmPassword = $('#txtConfirmPassword').val();
+            if (password == confirmPassword) {
+                $('.iconChangePassword').show();
+            } else {
+                $('.iconChangePassword').hide();
+            }
+        });
+    })
+
+    var app = angular.module("appDekko", []);
+    app.controller("controllerDekko", function ($scope) { });
+
+    function socket() {
+        // var audio = new Audio('../Content/mp3/swiftly.mp3');
+        //var socket = io.connect('http://gpt.winds.vn:8092',
+        var socket = io.connect('http://apidev.tpmart.winds.vn/',
+
+            {
+                reconnect: true,
+                forceWebsockets: true
+            });
+
+        socket.on('connect', () => {
+            console.log("connect");
+            console.log("abc");
+            //socket.emit('test','abc123')
+        });
+
+        socket.on('new-order-mrfish', (msg) => {
+            $('#all-new-order').text(parseInt($('#all-new-order').text()) + 1);
+            $("#listNoti").load('@Url.Action("_ListNotification", "Home")')
+            var audio = new Audio('../Content/mp3/swiftly.mp3');
+            toastr.options = {
+                "debug": false,
+                "positionClass": "toast-bottom-right",
+                //"onclick": window.location="/Transaction/Index",
+                "fadeIn": 300,
+                "fadeOut": 1000,
+                "timeOut": 6000,
+                "extendedTimeOut": 5000,
+                "progressBar": true
+            }
+            toastr.options.onclick = function () { window.location.href = "/Home/ReadNotification?ID=" + msg.id + "&type=1" + "&orderID=" + msg.orderID; }
+            toastr.success(msg.content, 'Thông báo');
+            audio.play();
+        });
+
+        socket.on('customer-rank-mrfish', (msg) => {
+            $("#listNoti").load('@Url.Action("_ListNotification", "Home")')
+            var audio = new Audio('../Content/mp3/swiftly.mp3');
+            toastr.options = {
+                "debug": false,
+                "positionClass": "toast-bottom-right",
+                //"onclick": window.location="/Transaction/Index",
+                "fadeIn": 300,
+                "fadeOut": 1000,
+                "timeOut": 6000,
+                "extendedTimeOut": 5000,
+                "progressBar": true
+            }
+            toastr.options.onclick = function () { window.location.href = "/Home/ReadNotification?ID=" + msg.id + "&type=2" + "&customerID=" + msg.customerID; }
+            toastr.success(msg.content, 'Thông báo');
+            audio.play();
+        });
+        socket.on('disconnect', () => {
+            console.log("disconnect");
+        });
+    }
+    function Reload() {
+        $('.iconChangePassword').hide();
+    }
+    // Hiện thị ngày giờ
+    //function showTime() {
+    //    var date = new Date();
+    //    var h = date.getHours(); // 0 - 23
+    //    var m = date.getMinutes(); // 0 - 59
+
+    //    if (h == 0) {
+    //        h = 12;
+    //    }
+
+    //    if (h > 12) {
+    //        h = h - 12;
+    //    }
+
+    //    h = (h < 10) ? "0" + h : h;
+    //    m = (m < 10) ? "0" + m : m;
+
+    //    var time = h + ":" + m;
+    //    document.getElementById("MyClockDisplay").innerText = time;
+    //    document.getElementById("MyClockDisplay").textContent = time;
+
+    //    setTimeout(showTime, 1000);
+
+    //}
+    //showTime();
+    //var today = new Date();
+    //var date = today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
+    //document.getElementById("hvn").innerHTML = date;
+</script>
+
+<div id="changePassword" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-lock" aria-hidden="false"></i> Thay đổi mật khẩu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <label>Mật khẩu hiện tại</label>
+                        <input class="form-control" type="password" id="txtCurrentPassword" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <label>Mật khẩu mới</label>
+                        <input class="form-control" type="password" id="txtNewPassword" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12 col-sm-12 col-12">
+                        <label>Xác nhận mật khẩu mới</label>
+                        <input class="form-control" type="password" id="txtConfirmPassword" />
+                        <i id="checkp" class="iconChangePassword text-success fa fa-check"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="changePassword()">Thay đổi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*modal loading *@
+<div class="modal" id="modalLoad" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content text-center py-3">
+            <div class="modal-body text-center">
+                <i class="fa fa-spinner text-success fa-spin" style="font-size: 40px;"></i>
+                <div class="col-md-12 text-center mt-2">
+                    <span>Đang xử lý</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

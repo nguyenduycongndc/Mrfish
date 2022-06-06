@@ -1,0 +1,187 @@
+﻿@using Data.Model.APIWeb
+@using Data.Utils
+@using PagedList.Mvc
+@using APIProject.Controllers
+@model List<ListCategoryOutputModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breadcrumb-holder">
+    <div class="row mt-5 ">
+        <div class="text-dark col-md-10 col-sm-12 col-12 mt-2">
+            <h4><i class="fa fa-th-list ic-menu"></i> Danh mục sản phẩm</h4>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3 col-sm-12 col-12 mt-2">
+        <input class="form-control" placeholder="Tên danh mục" onkeyup="SearchCategory();" id="txtName" />
+    </div>
+    <div class="col-md-3 col-sm-12 col-12 mt-2">
+        <select class="form-control" onchange="SearchCategory();" id="ctgr">
+            <option>Trạng thái</option>
+            <option value="@SystemParam.STATUS_NO_ACTIVE">Ngưng hoạt động</option>
+            <option value="@SystemParam.STATUS_ACTIVE">Hoạt động</option>
+        </select>
+    </div>
+    <div class="col-md-3 col-sm-12 col-12 mt-2">
+        <input type="date" data-date-format="dd/MM/yyyy" class="form-control" onchange="SearchCategory();" id="txtFromDate" placeholder="Từ ngày" />
+        @*<input type="text" class="form-control relative-icon-calendar date" onchange="SearchCategory();" id="txtFromDate" placeholder="Từ ngày" />
+            <i class="fa fa-calendar absolute-icon-calendar"></i>*@
+    </div>
+    <div class="col-md-3 col-sm-12 col-12 mt-2">
+        <input type="date" data-date-format="dd/MM/yyyy" class="form-control" onchange="SearchCategory();" id="txtToDate" placeholder="Đến ngày" />
+        @*<input type="text" class="form-control relative-icon-calendar date" onchange="SearchCategory();" id="txtToDate" placeholder="Đến ngày" />
+            <i class="fa fa-calendar absolute-icon-calendar"></i>*@
+    </div>
+</div>
+
+<div class="row " style="text-align: right">
+    @*<div class="col-md-2 col-sm-12 offset-md-10 col-12 mt-2 ">
+            <button class="btn btn-search btn-block " onclick="SearchCategory()" id="btnSearchCategory"><i class="fa fa-search"></i> Tìm kiếm</button>
+        </div>*@
+    <div class="col-md-12 col-sm-12 col-12 mt-2">
+        <button class="btn btn-primary px-3" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus mr-1"></i>Thêm mới</button>
+
+    </div>
+</div>
+
+<div class="row " id="TableCategory">
+    <div class="col-md-12 col-sm-12 col-12 mt-2">
+        @{
+            Html.RenderAction("Search", "Category", new { Page = 1, CateName = "", Status = "", FromDate = "", ToDate = "" });
+        }
+    </div>
+</div>
+
+<!-- Modal Thêm danh mục sản phẩm -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm danh mục sản phẩm</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="createCategory">
+                <form id="form_create_categories" name="form_create_categories">
+                    @*<div class="row m-3">
+                            <p class="mb-0 color-require"><label class="text-dark">Mã Danh Mục</label> *</p>
+                            <input oninput="this.value = this.value.toUpperCase()" placeholder="Nhập vào mã danh mục" id="code" name="Code" class="form-control" type="text" />
+                        </div>*@
+                    <div class="row m-3">
+                        <p class="mb-0 color-require"><label class="text-dark">Tên Danh Mục</label> *</p>
+                        <input placeholder="Nhập vào tên danh mục" id="name" name="Name" class="form-control" type="text" />
+                    </div>
+                    <div class="row m-3">
+                        <p class="mb-0 color-require"><label class="text-dark">Nội dung</label></p>
+                        <textarea class="form-control" rows="3" id="content"></textarea>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-12 mt-3 row" id="add_logo_place">
+                        <div class="col-md-12 col-sm-12 col-12 mt-3">
+                            <p class="mb-0 color-require"><label class="text-dark">Hình ảnh</label>*</p>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-12 mt-3 article" id="AddLogoPlace">
+                            <img id="AddImgLogoPlace" src="/Uploads/files/add_img.png" style="width: 118%; text-align: center; overflow: hidden; max-width: 200px; max-height: 200px;" alt="your image" />
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times pr-1"></i>Đóng</button>
+                <button type="button" class="btn btn-primary px-3" onclick="saveCreateCategory();"><i class="fa fa-check pr-1"></i>Lưu</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="UpdateCategory">
+
+</div>
+<script type="text/javascript">
+    CKEDITOR.on('dialogDefinition', function (ev) {
+        var dialogName = ev.data.name;
+        var dialogDefinition = ev.data.definition;
+        //var editorO = ev.data.definition.dialog.getParentEditor();
+
+        if (dialogName == 'image' || dialogName == 'image2') {
+            var infoTab = dialogDefinition.getContents('info');
+
+            if (dialogName == 'image') {
+                infoTab.remove('txtHeight');
+                infoTab.remove('txtWidth');
+                infoTab.remove('ratioLock');
+            }
+            else {
+                infoTab.remove('height');
+                infoTab.remove('width');
+                infoTab.remove('lock');
+            }
+        }
+    });
+    $("#add_logo_place").off('click').on('click', function (e) {
+        e.preventDefault();
+        var fider = new CKFinder();
+
+        fider.selectActionFunction = function (fileUrl) {
+            $("#AddImgLogoPlace ").remove();
+            $("#AddLogoPlace").append('<img id="AddImgLogoPlace" src="' + fileUrl + '" class="col-md-12 px-0 border-dekko contentImg" alt="your image" />');
+            var url = /*window.location.origin +*/ fileUrl;
+            $('#txtAddLogoPlace').val(url);
+        }
+        fider.popup();
+    });
+</script>
+
+<script type="text/javascript">
+    function ChangeImg($url) {
+        var fider = new CKFinder();
+        fider.selectActionFunction = function (fileUrl) {
+            var url_old = $url.attr('src');
+            $url.attr('src', fileUrl);
+            if (fileUrl != url_old) {
+                var str = $('#txturlImage').val().replace(url_old, fileUrl);
+                $('#txturlImage').val(str);
+            }
+        }
+        fider.popup();
+    }
+</script>
+
+<script type="text/javascript">
+    function DeleteImg(obj) {
+        var temp = obj.attr('data');
+        var url = obj.attr('src');
+        $('#' + temp + '').remove();
+        var str = $('#txturlImage').val();
+        $('#txturlImage').val(str.replace(url, ""));
+    }
+</script>
+<style>
+    td {
+        white-space: normal !important;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+    });
+
+    // ấn nút Enter để tìm kiếm
+    $("#txtName").keypress(function (e) {
+        var key = e.which;
+        if (key == 13) {
+            $("#btnSearchCategory").click();
+        }
+    });
+</script>
